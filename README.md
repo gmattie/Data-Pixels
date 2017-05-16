@@ -13,7 +13,7 @@ The DataPixels.js constructor requires 2 arguments:
 
 2. **pixelSize**:  The size of each color data unit in pixels.  This value represents the size of each perceived pixel that forms the pixel art.
 
-![Code Output](./resources/source/images/readme/CodeOutput.png)
+![Code Output](./resources/source/images/readme/CodeMario.png)
 
 ## **Data Pixels Playground**
 Data Pixels Playground is a lightweight, cross-platform, desktop application for **Windows**, **Mac** and **Linux**, which may be used to write and execute DataPixels.js instances for previewing and testing purposes.
