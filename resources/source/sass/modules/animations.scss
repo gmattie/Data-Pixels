@@ -1,0 +1,33 @@
+@keyframes dialogFadeIn {
+
+    from {
+
+        visibility: visible;
+        opacity: 0;
+        height: calc(100vh + #{$DIALOG_ANIMATION_DISPLACEMENT});
+        transform: translateY(-$DIALOG_ANIMATION_DISPLACEMENT);
+    }
+
+    to {
+
+        opacity: 1;
+        height: 100vh;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dialogFadeOut {
+
+    from {
+
+        opacity: 1;
+        height: 100vh;
+    }
+
+    to {
+
+        opacity: 0;
+        height: calc(100vh + #{$DIALOG_ANIMATION_DISPLACEMENT});
+        visibility: hidden;
+    }
+}

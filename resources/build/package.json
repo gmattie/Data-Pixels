@@ -1,0 +1,24 @@
+{
+  "name": "data-pixels-playground",
+  "productName": "Data Pixels Playground",
+  "version": "1.0.0",
+  "description": "Create Pixel Art Programmatically",
+  "author": "Geoffrey Mattie",
+  "license": "MIT",
+  "main": "mainElectron.js",
+  "scripts": {
+    "build": "electron mainElectron.js",
+    "package": "gulp package",
+    "package-linux": "gulp package-linux",  
+    "package-mac": "gulp package-mac",
+    "package-windows": "gulp package-windows"
+  },
+  "devDependencies": {
+    "electron": "^1.6.5",
+    "electron-packager": "^8.7.0",
+    "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "electron-window-state": "^4.1.1"
+  }
+}

@@ -1,0 +1,131 @@
+@import "./modules/constants.scss";
+@import "./modules/reset.scss";
+@import "./modules/fonts.scss";
+@import "./modules/animations.scss";
+@import "./modules/classes.scss";
+
+body {
+
+    padding: $MARGIN;
+    width: 100vw;
+    height: 100vh;
+    min-width: 600px;
+    min-height: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    #controls {
+
+        display: block;
+        margin-bottom: $MARGIN;
+        font-size: 0;
+
+        #group {
+
+            display: flex;
+            flex-direction: row;
+
+            #error, #settings, #layoutHorizontal, #layoutVertical {
+
+                margin-left: $MARGIN / 2;
+            }
+
+            #error {
+
+                flex-grow: 1;
+                color: #FF4444;
+                font-family: "Roboto Mono Medium", monospace;
+                font-size: 12px;
+                line-height: 12px;
+                text-align: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            #layoutVertical {
+
+                transform: rotate(-90deg);
+            }
+        }
+    }
+
+    #content {
+
+        flex: 1;
+        display: flex;
+        font-family: "Roboto Mono", monospace;
+        font-size: 12px;
+
+        #codeEditor {
+
+            position: relative;
+            font-size: 12px;
+            flex: 1;
+            filter: $CONTENT_DROP_SHADOW;
+            min-width: $CONTENT_MIN_SIZE;
+            min-height: $CONTENT_MIN_SIZE;
+
+            #textArea {
+
+                position: absolute;
+                top: 0;
+                left: $LINE_NUMBERS_WIDTH;
+                width: calc(100% - #{$LINE_NUMBERS_WIDTH});
+                height: 100%;
+                padding: $CODE_EDITOR_PADDING;
+                resize: none;
+                border: none;
+                font-family: inherit;
+                font-size: inherit;
+                outline: none;
+            }
+
+            #lineNumbers {
+
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: $LINE_NUMBERS_WIDTH;
+                height: 100%;
+                padding: $CODE_EDITOR_PADDING;
+                text-align: right;
+                border-right: none;
+                pointer-events: none;
+                white-space: pre;
+                overflow: hidden;
+                user-select: none;
+            }
+        }
+
+        #dragBar {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+
+            #dragIcon {
+
+                pointer-events: none;
+                width: $MARGIN;
+                height: $MARGIN;
+                padding-top: 3px;
+            }
+        }
+
+        #frameView {
+
+            position: relative;
+            flex: 1;
+            border: none;
+            pointer-events: none;
+            user-select: none;
+            filter: $CONTENT_DROP_SHADOW;
+            min-width: $CONTENT_MIN_SIZE;
+            min-height: $CONTENT_MIN_SIZE;
+        }
+    }
+}

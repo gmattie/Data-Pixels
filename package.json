@@ -1,0 +1,34 @@
+{
+  "name": "data-pixels-playground",
+  "version": "1.0.0",
+  "description": "Create pixel art programmatically",
+  "author": "Geoffrey Mattie",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "dev": "gulp --development",
+    "prod": "gulp --production",
+    "dev-prod": "gulp --development --production"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.7.7",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
+    "babel-preset-latest": "^6.24.1",
+    "browser-sync": "^2.18.8",
+    "gulp-clean-css": "^3.0.4",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-postcss": "^6.4.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-util": "^3.0.8",
+    "gulp": "^3.9.1",
+    "uglifyjs-webpack-plugin": "^0.4.3",
+    "webpack-stream": "^3.2.0",
+    "webpack": "^2.5.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}
