@@ -23,6 +23,7 @@
     "gulp-sourcemaps": "^2.6.0",
     "gulp-util": "^3.0.8",
     "gulp": "^3.9.1",
+    "uglify-js": "^2.8.26",
     "uglifyjs-webpack-plugin": "^0.4.3",
     "webpack-stream": "^3.2.0",
     "webpack": "^2.5.0"
