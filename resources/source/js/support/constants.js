@@ -308,9 +308,12 @@ Object.freeze(Example);
  *     <li> BUTTON </li>
  *     <li> BLANK </li>
  *     <li> CHECKBOX </li>
+ *     <li> CANVAS </li>
+ *     <li> CANVAS_RENDERING_CONTEXT_2D </li>
  *     <li> COPY </li>
  *     <li> DIV </li>
  *     <li> FIELDSET </li>
+ *     <li> HEAD </li>
  *     <li> IMAGE </li>
  *     <li> INPUT </li>
  *     <li> LABEL </li>
@@ -319,6 +322,7 @@ Object.freeze(Example);
  *     <li> SCRIPT_TYPE </li>
  *     <li> SCRIPT </li>
  *     <li> SELECT </li>
+ *     <li> XML_HTTP_GET </li>
  * </ul>
  * 
  * @constant
@@ -329,10 +333,13 @@ const HTML = {
     ANCHOR: "a",
     BUTTON: "button",
     BLANK: "_blank",
+    CANVAS: "canvas",
+    CANVAS_RENDERING_CONTEXT_2D: "2d",
     CHECKBOX: "checkbox",
     COPY: "copy",
     DIV: "div",
     FIELDSET: "fieldset",
+    HEAD: "head",
     IMAGE: "img",
     INPUT: "input",
     LABEL: "label",
@@ -340,7 +347,8 @@ const HTML = {
     OPTION: "option",
     SCRIPT_TYPE: "text/javascript",
     SCRIPT: "script",
-    SELECT: "select"
+    SELECT: "select",
+    XML_HTTP_GET: "GET"
 };
 
 Object.freeze(HTML);

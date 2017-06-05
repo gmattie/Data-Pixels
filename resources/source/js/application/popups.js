@@ -207,7 +207,7 @@ function createImage(src, CSSClass) {
 /**
  * @description Creates an HTMLAnchorElement.
  * @param {string} url - The URL of the link.
- * @param {string} [text = null] The text to be displayed as the link.  If null, the link text will appear as the URL.
+ * @param {string} [text = null] - The text to be displayed as the link.  If null, the link text will appear as the URL.
  * @private
  * @function
  * 

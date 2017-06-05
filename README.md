@@ -1,6 +1,8 @@
-# **Data Pixels**
+<div align="center">
+    <img src="./resources/source/images/icons/icon.png" width="500">   
+    <h1><strong>DATA PIXELS ／ </strong>Create Pixel Art Programmatically</h1>
+</div>
 
-## **Create Pixel Art Programmatically**
 The **DataPixels.js** source code facilitates production of pixel art that is entirely generated programmatically at runtime.   Additionally, the accompanying desktop application, **Data Pixels Playground**, may be used to write and execute code for displaying both customized and automated pixel art.
 
 ## **DataPixels.js** 

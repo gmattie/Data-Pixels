@@ -21,7 +21,7 @@ import DataPixelsCodeFactory from "../dataPixels/DataPixelsCodeFactory.js";
  * @module
  * 
  */
-export {//
+export {
     
     checkExecuteButton,
     displayAboutDialog,
@@ -373,7 +373,7 @@ function executeCode() {
 
     const frameViewDocument = C.HTMLElement.FRAME_VIEW.contentDocument;
     const frameViewBody = frameViewDocument.body;
-    const headTag = frameViewDocument.getElementsByTagName("head")[0];
+    const headTag = frameViewDocument.getElementsByTagName(C.HTML.HEAD)[0];
 
     if (!M.DataPixelsClassCodeInternal) {
 
@@ -440,7 +440,7 @@ function loadDataPixelsClassCode() {
         const xhr = new XMLHttpRequest();
         xhr.addEventListener(C.Event.LOAD, XHRLoadHandler);
         xhr.addEventListener(C.Event.ERROR, XHRErrorHandler);
-        xhr.open("GET", C.Code.SCRIPT_URL);
+        xhr.open(C.HTML.XML_HTTP_GET, C.Code.SCRIPT_URL);
         xhr.send();
     }
     else {
@@ -682,11 +682,11 @@ function createAutoCode(image) {
 
     setErrorMessage(null);
 
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement(C.HTML.CANVAS);
     canvas.width = image.width;
     canvas.height = image.height;
 
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext(C.HTML.CANVAS_RENDERING_CONTEXT_2D);
     context.drawImage(image, 0, 0);
 
     const variableName = Utils.cleanFileName(M.File.name, "pixelData");                          

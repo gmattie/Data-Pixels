@@ -35,7 +35,7 @@ class Dialog extends Dispatcher {
 
     /**
      * @param {Object} content - A Node element contained within the Dialog window.
-     * @param {string} type - Determines the buttons and events of the Dialog window.  Dialog.Type.ALERT produces an "OK" button while Dialog.Type.CONFIRM produces both "OK" and "Cancel" buttons. 
+     * @param {string} [type = Dialog.Type.ALERT] - Determines the buttons and events of the Dialog window.  Dialog.Type.ALERT produces an "OK" button while Dialog.Type.CONFIRM produces both "OK" and "Cancel" buttons. 
      * 
      */
     constructor(content, type = Dialog.Type.ALERT) {
