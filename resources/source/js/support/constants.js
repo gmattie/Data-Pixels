@@ -478,7 +478,7 @@ const Label = {
     
     CANCEL: "Cancel",
     DIALOG_ABOUT_URL: "https://github.com/gmattie/Data-Pixels",
-    DIALOG_ABOUT: "Data Pixels Playground\n\nCopyright © 2017 Geoffrey Mattie\n",
+    DIALOG_ABOUT: `Data Pixels Playground\n\nCopyright © 2017-${new Date().getFullYear()} Geoffrey Mattie\n`,
     DIALOG_FILE_TYPE: "Illegal file type.  This application only supports raster based image files with the following type extensions:\n\nPNG, JPG, GIF.",
     DIALOG_LARGE_IMAGE: "This application is designed to process small, icon-sized image files.  Importing larger image files may result in decreased performance.\n\nDo you wish to proceed?",
     DIALOG_SETTINGS_APPEARANCE: "APPEARANCE",
