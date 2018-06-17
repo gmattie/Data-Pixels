@@ -105,9 +105,9 @@ const data = [[R, G],
 
 const size = 100;
 
-const dataPixels = new DataPixels(data, size).image;
+const image = new DataPixels(data, size).image;
 
-document.body.appendChild(dataPixels);
+document.body.appendChild(image);
 ```
 
 #### **Hearts**
@@ -118,6 +118,26 @@ document.body.appendChild(dataPixels);
  * 
  */
 import DataPixels from "data-pixels";
+
+/**
+ * @description Properties of type <strong>{number}</strong> consist of:
+ * <ul>
+ *     <li> S </li>
+ *     <li> M </li>
+ *     <li> L </li>
+ *     <li> XL </li>
+ * </ul>
+ * 
+ * @constant
+ * 
+ */
+const Size = {
+
+    S: 10,
+    M: 15,
+    L: 20,
+    XL: 25
+};
 
 /**
  * @description Creates a new heart shaped pixelData object of a specified hue
@@ -132,17 +152,14 @@ function createPixelDataHeart(red, green, blue, lightness = 20) {
     const R = red;
     const G = green;
     const B = blue;
-
     const L1 = lightness;
     const L2 = L1 * 2;
-
-    const H = `${R}, ${G}, ${B}`;           //Main Hue
-    const A = `${R+L2}, ${G+L2}, ${B+L2}`;  //Main Hue Light
-    const Y = `${R-L1}, ${G-L1}, ${B-L1}`;  //Main Hue Dark
-    const Z = `${R-L2}, ${G-L2}, ${B-L2}`;  //Main Hue Darker
-
-    const $ = "0, 0, 0";                    //Stroke
-    const _ = "0, 0, 0, 0";                 //Transparent
+    const H = `${R}, ${G}, ${B}`;                  //Main Hue
+    const A = `${R + L2}, ${G + L2}, ${B + L2}`;   //Main Hue Light
+    const Y = `${R - L1}, ${G - L1}, ${B - L1}`;   //Main Hue Dark
+    const Z = `${R - L2}, ${G - L2}, ${B - L2}`;   //Main Hue Darker
+    const $ = "0, 0, 0";                           //Stroke
+    const _ = "0, 0, 0, 0";                        //Transparent
 
     return [[_, _, $, $, $, _, _, _, $, $, $, _, _],
             [_, $, H, H, H, $, _, $, Y, Y, Z, $, _],
@@ -158,31 +175,35 @@ function createPixelDataHeart(red, green, blue, lightness = 20) {
             [_, _, _, _, _, _, $, _, _, _, _, _, _]];
 }
 
-//Create and rotate multiple heart instances of different hues
-const redHeart = new DataPixels(createPixelDataHeart(200, 0, 50), 25).canvas;
-const blueHeart = new DataPixels(createPixelDataHeart(50, 30, 210), 20).canvas;
-const purpleHeart = new DataPixels(createPixelDataHeart(125, 70, 180), 15).canvas;
-const greenHeart = new DataPixels(createPixelDataHeart(25, 160, 50), 10).canvas;
+/* 
+ * Create multiple heart canvases of different colors and sizes
+ *
+ */ 
+const redHeart = new DataPixels(createPixelDataHeart(200, 0, 50), Size.XL).canvas;
+const blueHeart = new DataPixels(createPixelDataHeart(50, 30, 210), Size.L).canvas;
+const purpleHeart = new DataPixels(createPixelDataHeart(125, 70, 180), Size.M).canvas;
+const greenHeart = new DataPixels(createPixelDataHeart(25, 160, 50), Size.S).canvas;
 
-let angel = 0;
-const rotation = 15;
+/* 
+ * Create a container for the heart canvases
+ *
+ */ 
+const heartsContainer = document.createElement("div");
+heartsContainer.style.filter = "drop-shadow(0 0 30px #FFFFFF)";
 
-for (const heart of [blueHeart, purpleHeart, greenHeart]) {
+document.body.appendChild(heartsContainer);
 
-    heart.style.transform = `rotate(${angel += rotation}deg)`;
-}
+/* 
+ * Rotate and append each heart canvas to the container
+ *
+ */ 
+const rotationDelta = 15;
 
-//Create a container to append the heart instances
-const container = document.createElement("div");
-container.style.filter = "drop-shadow(0 0 30px #FFFFFF)";
+[redHeart, blueHeart, purpleHeart, greenHeart].forEach((heart, index) => {
 
-container.appendChild(redHeart);
-container.appendChild(blueHeart);
-container.appendChild(purpleHeart);
-container.appendChild(greenHeart);
-
-//Append the container
-document.body.appendChild(container);
+    heart.style.transform = `rotate(${rotationDelta * index}deg)`;
+    heartsContainer.appendChild(heart);
+});
 ```
 
 #### **Mario Bros**
@@ -229,7 +250,10 @@ function createMarioBrother(isMario = true) {
             [B, B, B, B, _, _, _, _, B, B, B, B]];
 }
 
-//Create and append a Mario Brother instance
+/*
+ * Create and append a Mario Brother canvas instance
+ * 
+ */
 const pixelSize = 30;
 
 const brother = new DataPixels(createMarioBrother(true), pixelSize).canvas;
