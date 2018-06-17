@@ -66,7 +66,7 @@ gulp.task(tasks.TRANSPILE_JS, () => {
                         loader: "babel-loader",
                         exclude: /(node_modules)/,
                         options: {
-                            presets: [["latest", {"es2015": {"modules": false}}]]
+                            presets: [["env", {"modules": false}]]
                         }
                     }]
                 },
