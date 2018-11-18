@@ -83,3 +83,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Tasks & Todo Lists
+*.todo

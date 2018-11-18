@@ -1,12 +1,23 @@
+.disabledOpacity {
+
+    opacity: 0.25;
+}
+
 .controlButton {
 
     height: $CONTROL_BUTTON_HEIGHT;
     outline: none;
     user-select: none;
+    padding: $CONTROL_BUTTON_PADDING;
+    box-sizing: content-box;
+    position: relative;
+    top: -$CONTROL_BUTTON_PADDING;
+    left: -$CONTROL_BUTTON_PADDING;
 
     &:disabled {
 
-        opacity: 0.25;
+        @extend .disabledOpacity;
+
         pointer-events: none;
     }
 }
@@ -97,6 +108,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 .dialogThemeDark {
@@ -280,6 +292,11 @@
 
             color: #AAAAAA;
             background-color: #444444;
+
+            #info {
+
+                color: #CCCCCC;
+            }
         }
 
         #frameView {
@@ -314,6 +331,11 @@
 
             color: #555555;
             background-color: #DEDEDE;
+
+            #info {
+
+                color: #444444;
+            }
         }
 
         #frameView {

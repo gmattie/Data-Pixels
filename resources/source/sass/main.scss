@@ -11,7 +11,6 @@ body {
     height: 100vh;
     min-width: 600px;
     min-height: 400px;
-    text-align: center;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -19,17 +18,21 @@ body {
     #controls {
 
         display: block;
-        margin-bottom: $MARGIN;
+        margin-bottom: $MARGIN - $CONTROL_BUTTON_PADDING * 2;
         font-size: 0;
 
         #group {
 
             display: flex;
             flex-direction: row;
+            margin-right: -($CONTROL_BUTTON_PADDING + $CONTROL_BUTTON_PADDING);
 
-            #error, #settings, #layoutHorizontal, #layoutVertical {
+            #error, input {
 
-                margin-left: $MARGIN / 2;
+                &:not(:first-child) {
+
+                    margin-left: $MARGIN / 2 - $CONTROL_BUTTON_PADDING;
+                }
             }
 
             #error {
@@ -62,11 +65,12 @@ body {
         #codeEditor {
 
             position: relative;
-            font-size: 12px;
+            font-size: inherit;
             flex: 1;
             filter: $CONTENT_DROP_SHADOW;
             min-width: $CONTENT_MIN_SIZE;
             min-height: $CONTENT_MIN_SIZE;
+            z-index: 1;
 
             #textArea {
 
@@ -102,17 +106,54 @@ body {
 
         #dragBar {
 
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             user-select: none;
-
+            
             #dragIcon {
-
+                
+                text-align: center;
                 pointer-events: none;
                 width: $MARGIN;
                 height: $MARGIN;
                 padding-top: 3px;
+            }
+
+            #frameViewControls {
+
+                position: absolute;
+                margin: $MARGIN / 2;
+                z-index: 1;
+                pointer-events: none;
+                
+                #controls {
+
+                    display: flex;
+                    pointer-events: auto;
+                    cursor: auto;
+
+                    input:not(:first-child) {
+
+                        margin-left: $MARGIN / 2 - $CONTROL_BUTTON_PADDING;
+                    }
+
+                    #reflectHorizontal {
+
+                        transform: rotate(-90deg);
+                    }
+                }
+
+                #info {
+                    
+                    margin-top: -($MARGIN / 2);
+                    font-size: 0.8em;
+                    div::before {
+
+                        content: attr(data-info);
+                    }
+                }
             }
         }
 
@@ -121,7 +162,6 @@ body {
             position: relative;
             flex: 1;
             border: none;
-            pointer-events: none;
             user-select: none;
             filter: $CONTENT_DROP_SHADOW;
             min-width: $CONTENT_MIN_SIZE;

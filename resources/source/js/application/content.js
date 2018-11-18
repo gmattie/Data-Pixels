@@ -2,10 +2,11 @@
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as App from "./app.js";
 import * as C from "../support/constants.js";
+import * as Controls from "./controls.js";
 import * as Layout from "./layout.js";
 
 /**
- * @description The <strong>content.js</strong> module contains properties and functions pertaining to the Code Editor, iFrame and the Drag Bar.
+ * @description The <strong>content.js</strong> module contains properties and functions pertaining to the Code Editor, Frame View and the Drag Bar.
  * @requires app
  * @requires constants
  * @requires layout
@@ -16,6 +17,9 @@ import * as Layout from "./layout.js";
 export {
     
     init,
+    resetImageTransform,
+    setFrameViewMouseEvents,
+    updateImageTransform,
     updateLineNumbers
 };
 
@@ -24,6 +28,8 @@ export {
  * <ul>
  *     <li> DragPointOrigin </li>
  *     <li> LinesTotal </li>
+ *     <li> Image </li>
+ *     <li> Transform </li>
  * </ul>
  * 
  * @private
@@ -33,7 +39,17 @@ export {
 const M = {
 
     DragPointOrigin: undefined,
-    LinesTotal: undefined
+    LinesTotal: undefined,
+    Image: undefined,
+
+    Transform: {
+
+        x: 0,
+        y: 0,
+        scale: 1.00,
+        reflectH: false,
+        reflectV: false
+    }
 };
 
 /**
@@ -65,6 +81,7 @@ function initCodeEditor() {
     textArea.wrap = C.TextArea.OFF;
     textArea.spellcheck = false;
     textArea.selectionDirection = C.TextArea.SELECTION_FORWARD;
+    
     textArea.addEventListener(C.Event.KEY_DOWN, (event) => {
 
         if (event.key === C.TextArea.TAB_KEY) {
@@ -138,21 +155,16 @@ function initCodeEditor() {
         }
     });
 
-    textArea.addEventListener(C.Event.SCROLL, () => {
-
-        C.HTMLElement.LINE_NUMBERS.scrollTop = textArea.scrollTop;
-    });
-
+    textArea.addEventListener(C.Event.SCROLL, () => C.HTMLElement.LINE_NUMBERS.scrollTop = textArea.scrollTop);
     textArea.addEventListener(C.Event.INPUT, () => {
 
         updateLineNumbers();
-        App.checkExecuteButton();
+
+        Controls.updateExecuteButton();
     });
 
     textArea.textContent = S.Code;
-
-    updateLineNumbers();
-    App.checkExecuteButton();
+    textArea.dispatchEvent(new Event(C.Event.INPUT));
 }
 
 /**
@@ -170,39 +182,198 @@ function initDragBar() {
 
     dragBar.addEventListener(C.Event.MOUSE_DOWN, (event) => {
 
-        event.preventDefault();
-
-        M.DragPointOrigin = {
+        if (event.target === dragBar) {
             
-            x: event.clientX,
-            y: event.clientY
-        };
+            event.preventDefault();
 
-        Layout.setContentDisplayType(C.CSS.BLOCK);
+            M.DragPointOrigin = {
+                
+                x: event.clientX,
+                y: event.clientY
+            };
 
-        addEventListener(C.Event.MOUSE_MOVE, mouseMoveHandler);
-        addEventListener(C.Event.MOUSE_UP, mouseUpHandler);
+            Layout.setContentDisplayType(C.CSS.BLOCK);
+
+            addEventListener(C.Event.MOUSE_MOVE, dragBarMouseMoveHandler);
+            addEventListener(C.Event.MOUSE_UP, dragBarMouseUpHandler);
+        }
     });
 }
 
 /**
- * @description Initializes the iFrame with local CSS styling.
+ * @description Initializes the Frame View with inline CSS styling.
  * @private
  * @function
  * 
  */
 function initFrameView() {
 
-    const frameViewDocument = C.HTMLElement.FRAME_VIEW.contentDocument;
-    const frameViewBody = frameViewDocument.body;
+    const frameViewBody = C.HTMLElement.FRAME_VIEW.contentDocument.body;
 
     frameViewBody.style.boxSizing= C.CSS.BORDER_BOX;
     frameViewBody.style.margin = C.CSS.ZERO;
     frameViewBody.style.padding = C.CSS.ZERO;
+    frameViewBody.style.position = C.CSS.RELATIVE;
     frameViewBody.style.display = C.CSS.FLEX;
     frameViewBody.style.justifyContent = C.CSS.CENTER;
     frameViewBody.style.alignItems = C.CSS.CENTER;
     frameViewBody.style.overflow = C.CSS.HIDDEN;
+
+    const info = new Map([
+
+        [C.HTMLElement.FRAME_VIEW_INFO_SCALE, C.Label.FRAME_VIEW_SCALE],
+        [C.HTMLElement.FRAME_VIEW_INFO_WIDTH, C.Label.FRAME_VIEW_WIDTH],
+        [C.HTMLElement.FRAME_VIEW_INFO_HEIGHT, C.Label.FRAME_VIEW_HEIGHT],
+    ]);
+
+    info.forEach((value, key) => key.setAttribute("data-info", value));
+
+    App.setFrameViewHasImage(false);
+}
+
+/**
+ * @description Toggles mouse event handling for the Frame View
+ * @param {boolean} [value = true] - Adds or removes the mouse events.
+ * @public
+ * @function
+ * 
+ */
+function setFrameViewMouseEvents(value = true) {
+
+    const frameViewBody = C.HTMLElement.FRAME_VIEW.contentDocument.body;
+    frameViewBody.style.cursor = (value) ? C.CSS.GRAB : C.CSS.AUTO;
+
+    [C.Event.MOUSE_DOWN, C.Event.MOUSE_WHEEL].forEach((eventType) => {
+    
+        if (value) {
+        
+            M.Image = C.HTMLElement.FRAME_VIEW.contentDocument.body.firstChild;
+
+            frameViewBody.addEventListener(eventType, frameViewMouseHandler);
+            
+            updateImageTransform();
+            setTimeout(updateImageInfo, 0);
+        }
+        else {
+
+            frameViewBody.removeEventListener(eventType, frameViewMouseHandler);
+        }
+    });
+}
+
+/**
+ * @description Event handler called when dispatching mouse events from the Frame View.
+ * @param {Object} event - The event object.
+ * @private
+ * @function
+ * 
+ */
+function frameViewMouseHandler(event) {
+
+    switch(event.type) {
+    
+        case C.Event.MOUSE_DOWN:
+
+            [C.Event.MOUSE_MOVE, C.Event.MOUSE_UP, C.Event.MOUSE_LEAVE, C.Event.DRAG_START]
+                .forEach((eventType) => event.target.addEventListener(eventType, frameViewMouseHandler));
+
+            break;
+            
+        case C.Event.MOUSE_MOVE: {
+
+			const x = M.Transform.x + event.movementX;
+            const y = M.Transform.y + event.movementY;
+            
+            updateImageTransform(x, y);
+
+            break;
+        }
+            
+        case C.Event.MOUSE_UP:
+        case C.Event.MOUSE_LEAVE:
+
+            [C.Event.MOUSE_MOVE, C.Event.MOUSE_UP, C.Event.MOUSE_LEAVE, C.Event.DRAG_START]
+                .forEach((eventType) => event.target.removeEventListener(eventType, frameViewMouseHandler));
+            
+            break;
+            
+        case C.Event.MOUSE_WHEEL:
+        
+            updateImageTransform(null, null, event.wheelDelta > 0);
+            
+            break;
+
+        case C.Event.DRAG_START:
+
+            event.preventDefault();
+
+            break;
+    }
+}
+
+/**
+ * @description Updates the image coordinates and scale transformation.
+ * @param {?number} [x = null] - The amount of pixels to translate the image along the horizontal axis.
+ * @param {?number} [y = null] - The amount of pixels to translate the image along the vertical axis.
+ * @param {?boolean} [scale = null] - Increments (true) or decrements (false) the image scale.
+ * @param {?boolean} [reflectH = null] - Reflects the image along the horizontal axis.
+ * @param {?boolean} [reflectV = null] - Reflects the image along the vertical axis.
+ * @public
+ * @function
+ * 
+ */
+function updateImageTransform(x = null, y = null, scale = null, reflectH = null, reflectV = null) {
+
+	M.Transform.x = (x === null) ? M.Transform.x : x;
+	M.Transform.y = (y === null) ? M.Transform.y : y;
+
+    M.Transform.scale = (scale === null) ? M.Transform.scale : (() => {
+
+        if (typeof scale === C.Type.BOOLEAN) {
+        
+            const step = (scale) ? C.Measurement.SCALE_STEP : -(C.Measurement.SCALE_STEP);
+
+            return Math.max(0.01, M.Transform.scale + step);
+        }
+        
+        return scale;
+    })();
+
+    M.Transform.reflectH = (reflectH === null) ? M.Transform.reflectH : (reflectH) ? !M.Transform.reflectH : false;
+    M.Transform.reflectV = (reflectV === null) ? M.Transform.reflectV : (reflectV) ? !M.Transform.reflectV : false;
+
+	M.Image.style.transform = `
+    
+    	${C.CSS.TRANSLATE}(${M.Transform.x}${C.CSS.PX}, ${M.Transform.y}${C.CSS.PX})
+        ${C.CSS.SCALE_Y}(${(M.Transform.reflectH) ? "-" : "+"}${M.Transform.scale})
+        ${C.CSS.SCALE_X}(${(M.Transform.reflectV) ? "-" : "+"}${M.Transform.scale})
+    `;
+
+    updateImageInfo();
+}
+
+/**
+ * @description Resets the image to the default properties.
+ * @public
+ * @function
+ * 
+ */
+function resetImageTransform() {
+
+    updateImageTransform(0, 0, 1.00, false, false);
+}
+
+/**
+ * @description Updates the image info that displays scale, width and height.
+ * @private
+ * @function
+ * 
+ */
+function updateImageInfo() {
+
+    C.HTMLElement.FRAME_VIEW_INFO_SCALE.textContent = M.Transform.scale.toFixed(2);
+    C.HTMLElement.FRAME_VIEW_INFO_WIDTH.textContent = Math.round(M.Image.offsetWidth * M.Transform.scale);
+    C.HTMLElement.FRAME_VIEW_INFO_HEIGHT.textContent = Math.round(M.Image.offsetHeight * M.Transform.scale);
 }
 
 /**
@@ -237,7 +408,7 @@ function updateLineNumbers() {
  * @function
  * 
  */
-function mouseMoveHandler(event) {
+function dragBarMouseMoveHandler(event) {
 
     const codeEditor = C.HTMLElement.CODE_EDITOR;
     const frameView = C.HTMLElement.FRAME_VIEW;
@@ -280,10 +451,10 @@ function mouseMoveHandler(event) {
  * @function
  * 
  */
-function mouseUpHandler() {
+function dragBarMouseUpHandler() {
 
     Layout.setContentDisplayType(C.CSS.FLEX);
 
-    removeEventListener(C.Event.MOUSE_UP, mouseUpHandler);
-    removeEventListener(C.Event.MOUSE_MOVE, mouseMoveHandler);
+    removeEventListener(C.Event.MOUSE_UP, dragBarMouseUpHandler);
+    removeEventListener(C.Event.MOUSE_MOVE, dragBarMouseMoveHandler);
 }

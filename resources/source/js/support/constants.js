@@ -71,16 +71,21 @@ Object.freeze(Code);
  * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
  *     <li> AUTO </li>
- *     <li> BORDER_BOX </li>
  *     <li> BLOCK </li>
+ *     <li> BORDER_BOX </li>
  *     <li> CENTER </li>
  *     <li> COLUMN </li>
  *     <li> FLEX </li>
+ *     <li> GRAB </li>
  *     <li> HIDDEN </li>
  *     <li> LEFT </li>
  *     <li> NONE </li>
  *     <li> PX </li>
+ *     <li> RELATIVE </li>
  *     <li> ROW </li>
+ *     <li> SCALE_X </li>
+ *     <li> SCALE_Y </li>
+ *     <li> TRANSLATE </li>
  *     <li> ZERO </li>
  * </ul>
  * 
@@ -90,16 +95,21 @@ Object.freeze(Code);
 const CSS = {
 
     AUTO: "auto",
-    BORDER_BOX: "border-box",
     BLOCK: "block",
+    BORDER_BOX: "border-box",
     CENTER: "center",
     COLUMN: "column",
     FLEX: "flex",
+    GRAB: "-webkit-grab",
     HIDDEN: "hidden",
     LEFT: "left", 
     NONE: "none",
     PX: "px",
+    RELATIVE: "relative",
     ROW: "row",
+    SCALE_X: "scaleX",
+    SCALE_Y: "scaleY",
+    TRANSLATE: "translate",
     ZERO: "0"
 };
 
@@ -128,6 +138,7 @@ Object.freeze(CSS);
  *     <li> DIALOG_THEME_DARK </li>
  *     <li> DIALOG_THEME_LIGHT </li>
  *     <li> DIALOG_WINDOW </li>
+ *     <li> DISABLED_OPACITY </li>
  *     <li> DRAG_BAR_HORIZONTAL </li>
  *     <li> DRAG_BAR_VERTICAL </li>
  *     <li> THEME_DARK </li>
@@ -159,6 +170,7 @@ const CSSClass = {
     DIALOG_THEME_LIGHT: "dialogThemeLight",
     DIALOG_WINDOW: "dialogWindow",
     DIALOG: "dialog",
+    DISABLED_OPACITY: "disabledOpacity",
     DRAG_BAR_HORIZONTAL: "dragBarHorizontal",
     DRAG_BAR_VERTICAL: "dragBarVertical",
     THEME_DARK: "themeDark",
@@ -219,28 +231,38 @@ Object.freeze(Electron);
  *     <li> CLICK </li>
  *     <li> DRAG_ENTER </li>
  *     <li> DRAG_OVER </li>
+ *     <li> DRAG_START </li>
  *     <li> DROP </li>
- *     <li> ELECTRON_EXECUTE_BUTTON_REQUEST </li>
  *     <li> ELECTRON_MENU_ABOUT </li>
  *     <li> ELECTRON_MENU_EXAMPLE_BASIC </li>
  *     <li> ELECTRON_MENU_EXAMPLE_HEARTS </li>
  *     <li> ELECTRON_MENU_EXAMPLE_MARIO_BROS </li>
  *     <li> ELECTRON_MENU_EXECUTE </li>
  *     <li> ELECTRON_MENU_EXPORT_DATA_PIXELS_FILE </li>
+ *     <li> ELECTRON_MENU_REFLECT_HORIZONTAL </li>
+ *     <li> ELECTRON_MENU_REFLECT_VERTICAL </li>
  *     <li> ELECTRON_MENU_IMPORT_IMAGE_FILE </li>
  *     <li> ELECTRON_MENU_LAYOUT_HORIZONTAL </li>
  *     <li> ELECTRON_MENU_LAYOUT_VERTICAL </li>
+ *     <li> ELECTRON_MENU_RESET </li>
+ *     <li> ELECTRON_MENU_SCALE_DOWN </li>
+ *     <li> ELECTRON_MENU_SCALE_UP </li>
  *     <li> ELECTRON_MENU_SETTINGS </li>
- *     <li> ELECTRON_ORIENTATION_REQUEST </li>
+ *     <li> ELECTRON_REQUEST_EXECUTE_BUTTON </li>
+ *     <li> ELECTRON_REQUEST_FRAME_VIEW_HAS_IMAGE </li>
+ *     <li> ELECTRON_REQUEST_ORIENTATION </li>
  *     <li> ELECTRON_UPDATE_EXECUTE_BUTTON </li>
+ *     <li> ELECTRON_UPDATE_FRAME_VIEW_HAS_IMAGE </li>
  *     <li> ELECTRON_UPDATE_ORIENTATION </li>
  *     <li> ERROR </li>
  *     <li> INPUT </li>
  *     <li> KEY_DOWN </li>
  *     <li> LOAD </li>
  *     <li> MOUSE_DOWN </li>
+ *     <li> MOUSE_LEAVE </li>
  *     <li> MOUSE_MOVE </li>
  *     <li> MOUSE_UP </li>
+ *     <li> MOUSE_WHEEL </li>
  *     <li> SCROLL </li>
  * </ul>
  * 
@@ -254,29 +276,39 @@ const Event = {
     CLICK: "click",
     DRAG_ENTER: "dragenter",
     DRAG_OVER: "dragover",
+    DRAG_START: "dragstart",
     DROP: "drop",
-    ELECTRON_EXECUTE_BUTTON_REQUEST: "executeButtonRequest",
     ELECTRON_MENU_ABOUT: "menuAbout",
     ELECTRON_MENU_EXAMPLE_BASIC: "menuExampleBasic",
     ELECTRON_MENU_EXAMPLE_HEARTS: "menuExampleHearts",
     ELECTRON_MENU_EXAMPLE_MARIO_BROS: "menuExampleMarioBros",
     ELECTRON_MENU_EXECUTE: "menuExecute",
     ELECTRON_MENU_EXPORT_DATA_PIXELS_FILE: "menuExportDataPixelsFile",
+    ELECTRON_MENU_REFLECT_HORIZONTAL: "menuReflectHorizontal",
+    ELECTRON_MENU_REFLECT_VERTICAL: "menuReflectVertical",
     ELECTRON_MENU_IMPORT_IMAGE_FILE: "menuImportImageFile",
     ELECTRON_MENU_LAYOUT_HORIZONTAL: "menuLayoutHorizontal",
     ELECTRON_MENU_LAYOUT_VERTICAL: "menuLayoutVertical",
+    ELECTRON_MENU_RESET: "menuReset",
+    ELECTRON_MENU_SCALE_DOWN: "menuScaleDown",
+    ELECTRON_MENU_SCALE_UP: "menuScaleUp",
     ELECTRON_MENU_SETTINGS: "menuSettings",
-    ELECTRON_ORIENTATION_REQUEST: "orientationRequest",
+    ELECTRON_REQUEST_EXECUTE_BUTTON: "requestExecuteButton",
+    ELECTRON_REQUEST_FRAME_VIEW_HAS_IMAGE: "requestFrameViewHasImage",
+    ELECTRON_REQUEST_ORIENTATION: "requestOrientation",
     ELECTRON_UPDATE_EXECUTE_BUTTON: "updateExecuteButton",
+    ELECTRON_UPDATE_FRAME_VIEW_HAS_IMAGE: "updateFrameViewHasImage",
     ELECTRON_UPDATE_ORIENTATION: "updateOrientation",
     ERROR: "error",
     INPUT: "input",
     KEY_DOWN: "keydown",
     LOAD: "load",
     MOUSE_DOWN: "mousedown",
+    MOUSE_LEAVE: "mouseleave",
     MOUSE_MOVE: "mousemove",
     MOUSE_UP: "mouseup",
-    SCROLL: "scroll"
+    MOUSE_WHEEL: "wheel",
+    SCROLL: "scroll"    
 };
 
 Object.freeze(Event);
@@ -357,8 +389,13 @@ Object.freeze(HTML);
  * @description Properties of type <strong>{Object}</strong> consist of:
  * <ul>
  *     <li> BUTTON_EXECUTE </li>
+ *     <li> BUTTON_REFLECT_HORIZONTAL </li>
+ *     <li> BUTTON_REFLECT_VERTICAL </li>
  *     <li> BUTTON_LAYOUT_HORIZONTAL </li>
  *     <li> BUTTON_LAYOUT_VERTICAL </li>
+ *     <li> BUTTON_RESET </li>
+ *     <li> BUTTON_SCALE_DOWN </li>
+ *     <li> BUTTON_SCALE_UP </li>
  *     <li> BUTTON_SETTINGS </li>
  *     <li> CODE_EDITOR </li>
  *     <li> CONTENT </li>
@@ -366,6 +403,12 @@ Object.freeze(HTML);
  *     <li> DRAG_ICON </li>
  *     <li> ERROR </li>
  *     <li> FRAME_VIEW </li>
+ *     <li> FRAME_VIEW_HUD </li>
+ *     <li> FRAME_VIEW_INFO_HEIGHT </li>
+ *     <li> FRAME_VIEW_INFO_SCALE </li>
+ *     <li> FRAME_VIEW_INFO_WIDTH </li>
+ *     <li> FRAME_VIEW_INFO_X_POS </li>
+ *     <li> FRAME_VIEW_INFO_Y_POS </li>
  *     <li> LINE_NUMBERS </li>
  *     <li> TEXT_AREA </li>
  * </ul>
@@ -376,14 +419,23 @@ Object.freeze(HTML);
 const HTMLElement = {
 
     BUTTON_EXECUTE: document.getElementById("execute"),
+    BUTTON_REFLECT_HORIZONTAL: document.getElementById("reflectHorizontal"),
+    BUTTON_REFLECT_VERTICAL: document.getElementById("reflectVertical"),
     BUTTON_LAYOUT_HORIZONTAL: document.getElementById("layoutHorizontal"),
     BUTTON_LAYOUT_VERTICAL: document.getElementById("layoutVertical"),
+    BUTTON_RESET: document.getElementById("reset"),
+    BUTTON_SCALE_DOWN: document.getElementById("scaleDown"),
+    BUTTON_SCALE_UP: document.getElementById("scaleUp"),
     BUTTON_SETTINGS: document.getElementById("settings"),
     CODE_EDITOR: document.getElementById("codeEditor"),
     CONTENT: document.getElementById("content"),
     DRAG_BAR: document.getElementById("dragBar"),
     DRAG_ICON: document.getElementById("dragIcon"),
     ERROR: parent.document.getElementById("error"),
+    FRAME_VIEW_CONTROLS: document.getElementById("frameViewControls"),
+    FRAME_VIEW_INFO_HEIGHT: document.getElementById("height"),
+    FRAME_VIEW_INFO_SCALE: document.getElementById("scale"),
+    FRAME_VIEW_INFO_WIDTH: document.getElementById("width"),
     FRAME_VIEW: document.getElementById("frameView"),
     LINE_NUMBERS: document.getElementById("lineNumbers"),
     TEXT_AREA: document.getElementById("textArea")
@@ -398,7 +450,11 @@ Object.freeze(HTMLElement);
  *     <li> APPLICATION </li>
  *     <li> DOCK </li>
  *     <li> ERROR </li>
+ *     <li> REFLECT </li>
+ *     <li> RESET </li>
  *     <li> RUN </li>
+ *     <li> SCALE_DOWN </li>
+ *     <li> SCALE_UP </li>
  *     <li> SETTINGS </li>
  * </ul>
  * 
@@ -411,7 +467,11 @@ const ImageSource = {
     APPLICATION: "./images/Application.png",
     DOCK: "./images/Dock.png",
     ERROR: "./images/Error.png",
+    REFLECT: "./images/Reflect.png",
+    RESET: "./images/Reset.png",
     RUN: "./images/Run.png",
+    SCALE_DOWN: "./images/ScaleDown.png",
+    SCALE_UP: "./images/ScaleUp.png",
     SETTINGS: "./images/Settings.png"
 };
 
@@ -441,6 +501,15 @@ Object.freeze(Indentation);
  * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
  *     <li> CANCEL </li>
+ *     <li> CONTROLS_EXECUTE_CODE </li>
+ *     <li> CONTROLS_REFLECT_HORIZONTALLY </li>
+ *     <li> CONTROLS_REFLECT_VERTICALLY </li>
+ *     <li> CONTROLS_LAYOUT_HORIZONTAL </li>
+ *     <li> CONTROLS_LAYOUT_VERTICAL </li>
+ *     <li> CONTROLS_RESET </li>
+ *     <li> CONTROLS_SCALE_DOWN </li>
+ *     <li> CONTROLS_SCALE_UP </li>
+ *     <li> CONTROLS_SETTINGS </li>
  *     <li> DIALOG_ABOUT </li>
  *     <li> DIALOG_ABOUT_URL </li>
  *     <li> DIALOG_FILE_TYPE </li>
@@ -461,14 +530,15 @@ Object.freeze(Indentation);
  *     <li> ELECTRON_DIALOG_IMPORT_TITLE </li>
  *     <li> ELECTRON_DIALOG_IMPORT_TYPE </li>
  *     <li> ERROR </li>
- *     <li> EXECUTE_CODE </li>
  *     <li> FILE_CORRUPT </li>
  *     <li> FILE_NOT_FOUND </li>
  *     <li> FILE_READ </li>
- *     <li> LAYOUT_HORIZONTAL </li>
- *     <li> LAYOUT_VERTICAL </li>
+ *     <li> FRAME_VIEW_HEIGHT </li>
+ *     <li> FRAME_VIEW_SCALE </li>
+ *     <li> FRAME_VIEW_WIDTH </li>
+ *     <li> FRAME_VIEW_X_POS </li>
+ *     <li> FRAME_VIEW_Y_POS </li>
  *     <li> OK </li>
- *     <li> SETTINGS </li>
  * </ul>
  * 
  * @constant
@@ -477,6 +547,15 @@ Object.freeze(Indentation);
 const Label = {
     
     CANCEL: "Cancel",
+    CONTROLS_EXECUTE: "Execute code",
+    CONTROLS_REFLECT_HORIZONTALLY: "Reflect Horizontally",
+    CONTROLS_REFLECT_VERTICALLY: "Reflect Vertically",
+    CONTROLS_LAYOUT_HORIZONTAL: "Layout Horizontal",
+    CONTROLS_LAYOUT_VERTICAL: "Layout Vertical",
+    CONTROLS_RESET: "Reset",
+    CONTROLS_SCALE_DOWN: "Scale Down",
+    CONTROLS_SCALE_UP: "Scale Up",
+    CONTROLS_SETTINGS: "Settings",
     DIALOG_ABOUT_URL: "https://github.com/gmattie/Data-Pixels",
     DIALOG_ABOUT: `Data Pixels Playground\n\nCopyright © 2017-${new Date().getFullYear()} Geoffrey Mattie\n`,
     DIALOG_FILE_TYPE: "Illegal file type.  This application only supports raster based image files with the following type extensions:\n\nPNG, JPG, GIF.",
@@ -497,14 +576,13 @@ const Label = {
     ELECTRON_DIALOG_IMPORT_TYPE: "Images",
     ELECTRON_DIALOG_IMPORT: "Import",
     ERROR: "ERROR:",
-    EXECUTE_CODE: "Execute code",
     FILE_CORRUPT: "Image file is corrupt.",
     FILE_NOT_FOUND: "DataPixels.js file not found.",
     FILE_READ: "File could not be read.",
-    LAYOUT_HORIZONTAL: "Layout Horizontal",
-    LAYOUT_VERTICAL: "Layout Vertical",
-    OK: "OK",
-    SETTINGS: "Settings"
+    FRAME_VIEW_HEIGHT: "Height: ",
+    FRAME_VIEW_SCALE: "Scale: ",
+    FRAME_VIEW_WIDTH: "Width: ",
+    OK: "OK"
 };
 
 Object.freeze(Label);
@@ -515,6 +593,7 @@ Object.freeze(Label);
  *     <li> CONTENT_MIN_SIZE </li>
  *     <li> IMAGE_MAX_AREA </li>
  *     <li> FRAME_VIEW_MARGIN </li>
+ *     <li> SCALE_STEP </li>
  * </ul>
  * 
  * @constant
@@ -522,9 +601,10 @@ Object.freeze(Label);
  */
 const Measurement = {
 
-    CONTENT_MIN_SIZE: 100,
+    CONTENT_MIN_SIZE: 160,
     IMAGE_MAX_AREA: 10000,
-    FRAME_VIEW_MARGIN: 0.85
+    FRAME_VIEW_MARGIN: 0.85,
+    SCALE_STEP: 0.01
 };
 
 Object.freeze(Measurement);
@@ -646,6 +726,7 @@ Object.freeze(Theme);
 /**
  * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
+ *     <li> BOOLEAN </li>
  *     <li> FUNCTION </li>
  *     <li> IMAGE_GIF </li>
  *     <li> IMAGE_JPG </li>
@@ -660,6 +741,7 @@ Object.freeze(Theme);
  */
 const Type = {
 
+    BOOLEAN: "boolean",
     FUNCTION: "function",
     IMAGE_GIF: "gif",
     IMAGE_JPG: "jpg",

@@ -15,6 +15,7 @@ export { SharedStates };
  *     <li> CodeEditorSize </li>
  *     <li> Description </li>
  *     <li> FrameViewFlexGrow </li>
+ *     <li> FrameViewHasImage </li>
  *     <li> FrameViewSize </li>
  *     <li> Indentation </li>
  *     <li> Mode </li>
@@ -34,6 +35,7 @@ const SharedStates = {
     CodeEditorSize: undefined,
     Description: undefined,
     FrameViewFlexGrow: undefined,
+    FrameViewHasImage: undefined,
     FrameViewSize: undefined,
     Indentation: undefined,
     Mode: undefined,

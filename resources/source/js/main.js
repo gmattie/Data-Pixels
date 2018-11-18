@@ -2,6 +2,7 @@
 import { SharedStates as S } from "./support/sharedStates.js";
 import * as App from "./application/app.js";
 import * as C from "./support/constants.js";
+import * as Content from "./application/content.js";
 
 /**
  * @description The <strong>main.js</strong> module is the entry point for the application and contains the interface functionality for Electron.
@@ -15,7 +16,8 @@ export {
 
     exportClassFile,
     updateElectronOrientationMenuItems,
-    updateElectronRunMenuItem
+    updateElectronRunMenuItem,
+    updateElectronFrameViewMenuItems
 };
 
 /**
@@ -76,16 +78,10 @@ function initElectronInterface() {
     
     if (isElectronEnvironment) {
 
-        M.IPCRenderer.on(C.Event.ELECTRON_EXECUTE_BUTTON_REQUEST, () => {
-
-            updateElectronRunMenuItem();
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_ORIENTATION_REQUEST, () => {
-
-            updateElectronOrientationMenuItems();
-        });
-
+        M.IPCRenderer.on(C.Event.ELECTRON_REQUEST_EXECUTE_BUTTON, updateElectronRunMenuItem);
+        M.IPCRenderer.on(C.Event.ELECTRON_REQUEST_ORIENTATION, updateElectronOrientationMenuItems);
+        M.IPCRenderer.on(C.Event.ELECTRON_REQUEST_FRAME_VIEW_HAS_IMAGE, updateElectronFrameViewMenuItems);
+        
         M.IPCRenderer.on(C.Event.ELECTRON_MENU_IMPORT_IMAGE_FILE, () => {
 
             M.RemoteDialog.showOpenDialog({
@@ -114,21 +110,10 @@ function initElectronInterface() {
             });
         });
         
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXPORT_DATA_PIXELS_FILE, () => {
-
-            App.loadDataPixelsClassCode();
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXECUTE, () => {
-
-            App.executeCode();
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_SETTINGS, () => {
-
-            App.settingsButtonClickHandler();
-        });
-
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXPORT_DATA_PIXELS_FILE, App.loadDataPixelsClassCode);
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXECUTE, App.executeCode);
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_SETTINGS, App.displaySettingsDialog);
+        
         M.IPCRenderer.on(C.Event.ELECTRON_MENU_LAYOUT_HORIZONTAL, () => {
 
             S.Orientation = C.Orientation.HORIZONTAL;
@@ -141,24 +126,43 @@ function initElectronInterface() {
             App.toggleLayout();
         });
 
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_ABOUT, () => {
-            
-            App.displayAboutDialog();
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_RESET, Content.resetImageTransform);
+
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_SCALE_UP, () => {
+
+            Content.updateImageTransform(null, null, true);
         });
+
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_SCALE_DOWN, () => {
+
+            Content.updateImageTransform(null, null, false);
+        });
+
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_REFLECT_HORIZONTAL, () => {
+
+            Content.updateImageTransform(null, null, null, true);
+        });
+
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_REFLECT_VERTICAL, () => {
+
+            Content.updateImageTransform(null, null, null, null, true);
+        });
+
+        M.IPCRenderer.on(C.Event.ELECTRON_MENU_ABOUT, App.displayAboutDialog);
 
         M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXAMPLE_BASIC, () => {
 
-            App.displayExampleCode(C.Example.BASIC);
+            App.writeExampleCode(C.Example.BASIC);
         });
 
         M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXAMPLE_HEARTS, () => {
 
-            App.displayExampleCode(C.Example.HEARTS);
+            App.writeExampleCode(C.Example.HEARTS);
         });
 
         M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXAMPLE_MARIO_BROS, () => {
 
-            App.displayExampleCode(C.Example.MARIO_BROS);
+            App.writeExampleCode(C.Example.MARIO_BROS);
         });
     }
 }
@@ -217,5 +221,19 @@ function updateElectronOrientationMenuItems() {
     if (isElectronEnvironment) {
 
         M.IPCRenderer.send(C.Event.ELECTRON_UPDATE_ORIENTATION, S.Orientation);
+    }
+}
+
+/**
+ * @description Updates the enabled state of the Electron menu items "Reset", "Scale Up / Down" and "Reflect Horizontally / Vertically" according to the state of their counterparts in the Renderer Process.
+ * @public
+ * @function
+ * 
+ */
+function updateElectronFrameViewMenuItems() {
+
+    if (isElectronEnvironment) {
+
+        M.IPCRenderer.send(C.Event.ELECTRON_UPDATE_FRAME_VIEW_HAS_IMAGE, S.FrameViewHasImage);
     }
 }

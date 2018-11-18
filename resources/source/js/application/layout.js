@@ -3,7 +3,7 @@ import { SharedStates as S } from "../support/sharedStates.js";
 import * as C from "../support/constants.js";
 
 /**
- * @description The <strong>layout.js</strong> module contains properties and functions pertaining to orientation and resizing of the the Code Editor, iFrame and Drag Bar.
+ * @description The <strong>layout.js</strong> module contains properties and functions pertaining to orientation and resizing of the the Code Editor, Frame View and Drag Bar.
  * @requires constants
  * @requires sharedStates
  * @module
@@ -32,7 +32,7 @@ const M = {
 };
 
 /**
- * @description Toggles the horizontal/vertical orientation of the Code Editor, iFrame and Drag Bar. 
+ * @description Toggles the horizontal/vertical orientation of the Code Editor, Frame View and Drag Bar. 
  * @public
  * @function
  * 
@@ -41,18 +41,27 @@ function toggleLayout() {
 
     const dragBar = C.HTMLElement.DRAG_BAR;
     const content = C.HTMLElement.CONTENT;
+    const frameViewControls = C.HTMLElement.FRAME_VIEW_CONTROLS;
+    
     const dragBarHorizontal = C.CSSClass.DRAG_BAR_HORIZONTAL;
     const dragBarVertical = C.CSSClass.DRAG_BAR_VERTICAL;
 
+    const isHorizontal = (S.Orientation === C.Orientation.HORIZONTAL);
+
     dragBar.classList.remove(dragBarHorizontal, dragBarVertical);
-    content.style.flexDirection = (S.Orientation === C.Orientation.HORIZONTAL) ? C.CSS.COLUMN : C.CSS.ROW;
-    dragBar.classList.add((S.Orientation === C.Orientation.HORIZONTAL) ? dragBarHorizontal : dragBarVertical);
+    content.style.flexDirection = (isHorizontal) ? C.CSS.COLUMN : C.CSS.ROW;
+    dragBar.classList.add((isHorizontal) ? dragBarHorizontal : dragBarVertical);
+
+    updateContentSizes();
+
+    frameViewControls.style.top = (isHorizontal) ? `${M.DragBarSize.height}${C.CSS.PX}` : C.CSS.ZERO;
+    frameViewControls.style.left = (isHorizontal) ? C.CSS.ZERO : `${M.DragBarSize.width}${C.CSS.PX}`;
 
     validateLayout();
 }
 
 /**
- * @description Determines if the Code Editor or iFrame size is less than the defined minimum size and, if so, adjusts accordingly.
+ * @description Determines if the Code Editor or Frame View size is less than the defined minimum size and, if so, adjusts accordingly.
  * @private
  * @function
  * 
@@ -63,8 +72,6 @@ function validateLayout() {
     const frameView = C.HTMLElement.FRAME_VIEW;
     const minSize = C.Measurement.CONTENT_MIN_SIZE;
 
-    updateContentSizes();
-    
     if (S.Orientation === C.Orientation.HORIZONTAL) {
 
         if (S.CodeEditorSize.height < minSize || S.FrameViewSize.height < minSize) {
@@ -91,7 +98,7 @@ function validateLayout() {
 }
 
 /**
- * @description Updates the width and height properties of the objects that are used to reference the size of the Code Editor, iFrame and Drag Bar. 
+ * @description Updates the width and height properties of the objects that are used to reference the size of the Code Editor, Frame View and Drag Bar. 
  * @private
  * @function
  * 
@@ -122,8 +129,8 @@ function updateContentSizes() {
 }
 
 /**
- * @description Adjusts the widths or heights, depending on orientation, of the Code Editor and iFrame to comply with the defined minimum size.
- * @peram {object} adjustmentTarget - The Code Editor or iFrame that does not comply with the defined minimum size.
+ * @description Adjusts the widths or heights, depending on orientation, of the Code Editor and Frame View to comply with the defined minimum size.
+ * @peram {object} adjustmentTarget - The Code Editor or Frame View that does not comply with the defined minimum size.
  * @peram {number} adjustmentSize - The amount, in pixels, to add to the adjustmentTarget's size so that it is equal to the defined minimum size.
  * @private
  * @function
@@ -136,14 +143,14 @@ function adjustLayout(adjustmentTarget, adjustmentSize) {
 
     if (S.Orientation === C.Orientation.HORIZONTAL) {
 
-        S.CodeEditorSize.height = (adjustmentTarget === codeEditor) ? S.CodeEditorSize.height + adjustmentSize : S.CodeEditorSize.height - adjustmentSize;
-        S.FrameViewSize.height = (adjustmentTarget === frameView) ? S.FrameViewSize.height + adjustmentSize : S.FrameViewSize.height - adjustmentSize;
+        S.CodeEditorSize.height += (adjustmentTarget === codeEditor) ? adjustmentSize : -(adjustmentSize);
+        S.FrameViewSize.height += (adjustmentTarget === frameView) ? adjustmentSize : -(adjustmentSize);
     }
 
     if (S.Orientation === C.Orientation.VERTICAL) {
 
-        S.CodeEditorSize.width = (adjustmentTarget === codeEditor) ? S.CodeEditorSize.width + adjustmentSize : S.CodeEditorSize.width - adjustmentSize;
-        S.FrameViewSize.width = (adjustmentTarget === frameView) ? S.FrameViewSize.width + adjustmentSize : S.FrameViewSize.width - adjustmentSize;
+        S.CodeEditorSize.width += (adjustmentTarget === codeEditor) ? adjustmentSize : -(adjustmentSize);
+        S.FrameViewSize.width += (adjustmentTarget === frameView) ? adjustmentSize : -(adjustmentSize);
     }
 
     updateContentDisplayType(C.CSS.BLOCK);
@@ -151,8 +158,8 @@ function adjustLayout(adjustmentTarget, adjustmentSize) {
 }
 
 /**
- * @description Changes the CSS display type to facilitate both automatic (CSS Flexbox) and manual (Drag Bar) resizing of the Code Editor, iFrame and Drag Bar.
- * @param {string} CSSDisplayType - The CSS display type, either "block" or "flex", to assign the content container of the Code Editor, iFrame and Drag Bar.
+ * @description Changes the CSS display type to facilitate both automatic (CSS Flexbox) and manual (Drag Bar) resizing of the Code Editor, Frame View and Drag Bar.
+ * @param {string} CSSDisplayType - The CSS display type, either "block" or "flex", to assign the content container of the Code Editor, Frame View and Drag Bar.
  * @private
  * @function
  * 
@@ -167,14 +174,15 @@ function updateContentDisplayType(CSSDisplayType) {
     if (CSSDisplayType === C.CSS.BLOCK) {
 
         content.style.display = C.CSS.BLOCK;
-        codeEditor.style.flex = C.CSS.NONE;
-        frameView.style.flex = C.CSS.NONE;
 
+        codeEditor.style.flex = C.CSS.NONE;
         codeEditor.style.width = `${S.CodeEditorSize.width}${C.CSS.PX}`;
         codeEditor.style.height = `${S.CodeEditorSize.height}${C.CSS.PX}`;
-
+        
+        frameView.style.flex = C.CSS.NONE;
         frameView.style.width = `${S.FrameViewSize.width}${C.CSS.PX}`;
         frameView.style.height = `${S.FrameViewSize.height}${C.CSS.PX}`;
+        frameView.style.pointerEvents = C.CSS.NONE;
 
         if (S.Orientation === C.Orientation.VERTICAL) {
 
@@ -195,10 +203,13 @@ function updateContentDisplayType(CSSDisplayType) {
         let frameViewRatio;
 
         content.style.display = C.CSS.FLEX;
+
         codeEditor.style.width = C.CSS.AUTO;
         codeEditor.style.height = C.CSS.AUTO;
+
         frameView.style.width = C.CSS.AUTO;
         frameView.style.height = C.CSS.AUTO;
+        frameView.style.pointerEvents = C.CSS.AUTO;
 
         if (S.Orientation === C.Orientation.HORIZONTAL) {
 
@@ -210,7 +221,9 @@ function updateContentDisplayType(CSSDisplayType) {
         else if (S.Orientation === C.Orientation.VERTICAL) {
 
             codeEditor.style.float = C.CSS.NONE;
+
             frameView.style.float = C.CSS.NONE;
+
             dragBar.style.float = C.CSS.NONE;
             dragBar.style.width = C.CSS.AUTO;
             dragBar.style.height = C.CSS.AUTO;
@@ -226,9 +239,9 @@ function updateContentDisplayType(CSSDisplayType) {
 }
 
 /**
- * @description Updates the CSS flex-grow properties of the Code Editor and the iFrame. 
+ * @description Updates the CSS flex-grow properties of the Code Editor and the Frame View. 
  * @param {number} codeEditorFlexGrow - The CSS flex-grow value for the Code Editor.
- * @param {number} frameViewFlexGrow - The CSS flex-grow value for the iFrame.
+ * @param {number} frameViewFlexGrow - The CSS flex-grow value for the Frame View.
  * @public
  * @function
  * 
@@ -245,8 +258,8 @@ function updateContentFlexSizes(codeEditorFlexGrow, frameViewFlexGrow) {
 }
 
 /**
- * @description Sets the CSS display type in preparation for either automatic (CSS Flexbox) or manual (Drag Bar) resizing of the Code Editor, iFrame and Drag Bar.
- * @param {string} CSSDisplayType - The CSS display type, either "block" or "flex", to assign the content container of the Code Editor, iFrame and Drag Bar. 
+ * @description Sets the CSS display type in preparation for either automatic (CSS Flexbox) or manual (Drag Bar) resizing of the Code Editor, Frame View and Drag Bar.
+ * @param {string} CSSDisplayType - The CSS display type, either "block" or "flex", to assign the content container of the Code Editor, Frame View and Drag Bar. 
  * @public
  * @function
  * 

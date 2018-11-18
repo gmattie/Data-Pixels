@@ -2,6 +2,7 @@
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as C from "../support/constants.js";
 import * as Content from "./content.js";
+import * as Controls from "./controls.js";
 import * as Examples from "../dataPixels/examples.js";
 import * as Layout from "./layout.js";
 import * as Main from "../main.js";
@@ -13,6 +14,7 @@ import DataPixelsCodeFactory from "../dataPixels/DataPixelsCodeFactory.js";
  * @description The <strong>app.js</strong> module contains properties and functions pertaining to the initialization and control of the application.
  * @requires constants
  * @requires content
+ * @requires controls
  * @requires dataPixelsCodeFactory
  * @requires layout
  * @requires popups
@@ -22,10 +24,10 @@ import DataPixelsCodeFactory from "../dataPixels/DataPixelsCodeFactory.js";
  * 
  */
 export {
-    
-    checkExecuteButton,
+
     displayAboutDialog,
-    displayExampleCode,
+    writeExampleCode,
+    displaySettingsDialog,
     executeCode,
     imageSizeCancelHandler,
     imageSizeOKHandler,
@@ -33,9 +35,9 @@ export {
     loadDataPixelsClassCode,
     readImageFile,
     setErrorMessage,
+    setFrameViewHasImage,
     setMode,
     setTheme,
-    settingsButtonClickHandler,
     toggleLayout,
     updateAutoCode
 };
@@ -43,12 +45,10 @@ export {
 /**
  * @description An object containing the following members with module scope:
  * <ul>
- *     <li> ControlButtons </li>
  *     <li> DataPixelsClassCode </li>
  *     <li> DataPixelsClassCodeInternal </li>
  *     <li> File </li>
  *     <li> Image </li>
- *     <li> IsExecutable </li>
  *     <li> IsExecuting </li>
  * </ul>
  * 
@@ -58,12 +58,10 @@ export {
  */
 const M = {
 
-    ControlButtons: undefined,
     DataPixelsClassCode: undefined,
     DataPixelsClassCodeInternal: undefined,
     File: undefined,
-    Image: undefined,  
-    IsExecutable: undefined,
+    Image: undefined,
     IsExecuting: undefined
 };
 
@@ -76,9 +74,10 @@ const M = {
 function init() {
 
     readStates();
-    initControls(); 
     initFileManagement();
+
     Content.init();
+    Controls.init();
 }
 
 /**
@@ -149,11 +148,8 @@ function setMode(mode) {
     if (S.Mode === C.Mode.MANUAL) {
 
         C.HTMLElement.TEXT_AREA.removeEventListener(C.Event.INPUT, textInputManualModeHandler);
-
-        return;
     }
-
-    if (S.Mode === C.Mode.AUTO) {
+    else if (S.Mode === C.Mode.AUTO) {
 
         C.HTMLElement.TEXT_AREA.addEventListener(C.Event.INPUT, textInputManualModeHandler);
     }
@@ -186,115 +182,20 @@ function setTheme(theme) {
         document.body.classList.remove((S.Theme === C.Theme.DARK) ? C.CSSClass.THEME_LIGHT : C.CSSClass.THEME_DARK);
         document.body.classList.add((S.Theme === C.Theme.DARK) ? C.CSSClass.THEME_DARK : C.CSSClass.THEME_LIGHT);
 
-        if (M.ControlButtons) {
-
-            for (const button of M.ControlButtons) {
-
-                button.classList.remove((S.Theme === C.Theme.DARK) ? C.CSSClass.CONTROL_BUTTON_THEME_DARK : C.CSSClass.CONTROL_BUTTON_THEME_LIGHT);
-                button.classList.add((S.Theme === C.Theme.DARK) ? C.CSSClass.CONTROL_BUTTON_THEME_LIGHT : C.CSSClass.CONTROL_BUTTON_THEME_DARK);
-            }
-        }
-
+        Controls.updateTheme();
         Popups.updateTheme();
     }
 }
 
 /**
- * @description Initializes the UI elements with applicable event handlers.
- * @private
- * @function
- * 
- */
-function initControls() {
-
-    const executeButton = buildControlButton(C.HTMLElement.BUTTON_EXECUTE,
-                                             C.ImageSource.RUN,
-                                             C.Label.EXECUTE_CODE,
-                                             executeCode);
-
-    const settingsButton = buildControlButton(C.HTMLElement.BUTTON_SETTINGS,
-                                              C.ImageSource.SETTINGS,
-                                              C.Label.SETTINGS,
-                                              settingsButtonClickHandler);
-
-    const layoutHorizontalButton = buildControlButton(C.HTMLElement.BUTTON_LAYOUT_HORIZONTAL,
-                                                      C.ImageSource.DOCK,
-                                                      C.Label.LAYOUT_HORIZONTAL,
-                                                      layoutButtonClickHandler);
-
-    const layoutVerticalButton = buildControlButton(C.HTMLElement.BUTTON_LAYOUT_VERTICAL,
-                                                    C.ImageSource.DOCK,
-                                                    C.Label.LAYOUT_VERTICAL,
-                                                    layoutButtonClickHandler);
-
-    M.ControlButtons = [executeButton, settingsButton, layoutHorizontalButton, layoutVerticalButton];
-
-    M.IsExecutable = true;
-
-    checkExecuteButton();
-    toggleLayout();
-}
-
-/**
- * @description Assigns attributes and event handling to an HTMLInputElement object that is of type "image".
- * @param {Object} button - The target HTMLInputElement object that is of type "image".
- * @param {string} src - The URL of the button's image.
- * @param {string} title - The label assigned as the button's tooltip.
- * @param {function} clickHandler - The callback function for the button's click event.
- * @private
- * @function
- * 
- */
-function buildControlButton(button, src, title, clickHandler) {
-
-    button.src = src;
-    button.title = title;
-    button.classList.add(C.CSSClass.CONTROL_BUTTON);
-    button.classList.add(S.Theme === C.Theme.LIGHT ? C.CSSClass.CONTROL_BUTTON_THEME_DARK : C.CSSClass.CONTROL_BUTTON_THEME_LIGHT);
-    button.addEventListener(C.Event.CLICK, clickHandler);
-
-    return button;
-}
-
-/**
- * @description Event handler called when settings control button is clicked.
- * @public
- * @function
- * 
- */
-function settingsButtonClickHandler() {
-
-    Popups.display(C.Dialog.SETTINGS);
-}
-
-/**
- * @description Event handler called when either of the layout control buttons are clicked.
- * @param {Object} event - The event object.
- * @private
- * @function
- * 
- */
-function layoutButtonClickHandler(event) {
-
-    const clickedVertical = (event.target === C.HTMLElement.BUTTON_LAYOUT_VERTICAL);
-    S.Orientation = (clickedVertical) ? C.Orientation.VERTICAL : C.Orientation.HORIZONTAL;
-
-    toggleLayout();
-}
-
-/**
- * @description Alters the visual appearance of the layout control buttons according to the current orientation.
+ * @description Updates the controls and layout of the application according to the current orientation. 
  * @public
  * @function
  * 
  */
 function toggleLayout() {
 
-    const isVertical = (S.Orientation === C.Orientation.VERTICAL);
-
-    C.HTMLElement.BUTTON_LAYOUT_HORIZONTAL.disabled = (isVertical) ? false : true;
-    C.HTMLElement.BUTTON_LAYOUT_VERTICAL.disabled   = (isVertical) ? true  : false;
-
+    Controls.toggleLayout();
     Layout.toggleLayout();
 
     Main.updateElectronOrientationMenuItems();
@@ -322,45 +223,7 @@ function displayCode(code, autoMode = true) {
     }
 
     Content.updateLineNumbers();
-    checkExecuteButton();
-}
-
-/**
- * @description Determines whether or not to disable or enable the Execute button.
- * @public
- * @function
- * 
- */
-function checkExecuteButton() {
-
-    const textArea = C.HTMLElement.TEXT_AREA;
-
-    if (textArea.value === "" && M.IsExecutable) {
-
-        disableExecuteButton(true);
-
-        return;
-    }
-
-    if (textArea.value !== "" && !M.IsExecutable) {
-
-        disableExecuteButton(false);
-    }
-}
-
-/**
- * @description Disables or enables the Execute button.
- * @param {boolean} disable - The disable value is either true (to disable) or false (to enable).
- * @private
- * @function
- * 
- */
-function disableExecuteButton(disable) {
-
-    C.HTMLElement.BUTTON_EXECUTE.disabled = disable;
-    M.IsExecutable = !disable;
-
-    Main.updateElectronRunMenuItem();
+    Controls.updateExecuteButton();
 }
 
 /**
@@ -398,6 +261,8 @@ function executeCode() {
     while (frameViewBody.firstChild) {
 
         frameViewBody.removeChild(frameViewBody.firstChild);
+
+        setFrameViewHasImage(false);
     }
 
     setErrorMessage(null);
@@ -411,6 +276,28 @@ function executeCode() {
 
     headTag.appendChild(runtimeScript);
     headTag.removeChild(runtimeScript);
+
+    frameViewBody.firstChild.style.pointerEvents = C.CSS.NONE;
+    frameViewBody.firstChild.style.userSelect = C.CSS.NONE;
+
+    setFrameViewHasImage(true);
+}
+
+/**
+ * @description Flags the Frame View as either having an image or not and updates the application accordingly.
+ * @param {boolean} [image = false] - The value that signifies the presents of an image within the Frame View.
+ * @private
+ * @function
+ * 
+ */
+function setFrameViewHasImage(image = false) {
+
+    Content.setFrameViewMouseEvents(image);
+    Controls.disableFrameViewControls(!image);
+
+    S.FrameViewHasImage = image;
+   
+    Main.updateElectronFrameViewMenuItems();
 }
 
 /**
@@ -745,13 +632,24 @@ function displayAboutDialog() {
 }
 
 /**
- * @description Displays code from examples.js in the HTMLTextAreaElement.
+ * @description Displays the application's Settings dialog.
+ * @public
+ * @function
+ * 
+ */
+function displaySettingsDialog() {
+
+    Popups.display(C.Dialog.SETTINGS);
+}
+
+/**
+ * @description Writes code from examples.js in the Code Editor.
  * @param {string} example - the name of the example object constant in examples.js.
  * @public
  * @function
  * 
  */
-function displayExampleCode(example) {
+function writeExampleCode(example) {
 
     displayCode(Examples[example], false);
 }
