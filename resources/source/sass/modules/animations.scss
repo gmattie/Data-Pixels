@@ -1,3 +1,5 @@
+$DIALOG_ANIMATION_DISPLACEMENT: 60px;
+
 @keyframes dialogFadeIn {
 
     from {
@@ -30,4 +32,20 @@
         height: calc(100vh + #{$DIALOG_ANIMATION_DISPLACEMENT});
         visibility: hidden;
     }
+}
+
+@mixin animateDialog($fadeIn) {
+
+    $keyframes: "";
+
+    @if ($fadeIn == true) {
+
+        $keyframes: dialogFadeIn;
+    }
+    @else {
+        
+        $keyframes: dialogFadeOut;
+    }
+
+    animation: $keyframes 0.2s ease-out forwards;
 }

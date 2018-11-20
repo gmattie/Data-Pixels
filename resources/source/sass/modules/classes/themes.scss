@@ -1,0 +1,83 @@
+@mixin setTheme($appBackgroundColor, $editorBackgroundColor, $frameViewBackgroundColor, $textColor, $lineNumbersBackgroundColor) {
+
+    background-color: $appBackgroundColor;
+
+    #content {
+
+        #codeEditor {
+
+            #textArea {
+
+                color: $textColor;
+                background-color: $editorBackgroundColor;
+            }
+
+            #lineNumbers {
+
+                color: $frameViewBackgroundColor;
+                background-color: $lineNumbersBackgroundColor;
+            }
+        }
+
+        #dragBar {
+
+            color: $textColor;
+            background-color: $appBackgroundColor;
+
+            #info {
+
+                color: $textColor;
+            }
+        }
+
+        #frameView {
+
+            background-color: $frameViewBackgroundColor;
+        }
+    }
+}
+
+.themeDark {
+
+    @include setTheme(#444444, #555555, #808080, #CCCCCC, #333333);
+}
+
+.themeLight {
+
+    @include setTheme(#DEDEDE, #EEEEEE, #FFFFFF, #444444, #CCCCCC);
+}
+
+@mixin setButtonTheme($buttonBrightness, $hoverBrightness, $activeBrightness) {
+    
+    filter: brightness($buttonBrightness);
+    
+    &:hover {
+        
+        filter: brightness($hoverBrightness);
+    }
+    
+    &:active {
+        
+        filter: brightness($activeBrightness);
+    }
+}
+
+.controlButtonThemeLight {
+
+    @include setButtonTheme(0.8, 0.9, 0.7);
+}
+
+.controlButtonThemeDark {
+
+    @include setButtonTheme(0.3, 0.5, 0.1);
+}
+
+.dialogThemeDark {
+
+    background: radial-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.9));
+}
+
+.dialogThemeLight {
+
+    background-color: rgba(255, 255, 255, 0.8);
+}

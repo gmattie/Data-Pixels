@@ -1,0 +1,49 @@
+.controlButton {
+
+    height: 14px;
+    outline: none;
+    user-select: none;
+    padding: $SHARED_CONTROL_BUTTON_PADDING;
+    box-sizing: content-box;
+    position: relative;
+    top: -$SHARED_CONTROL_BUTTON_PADDING;
+    left: -$SHARED_CONTROL_BUTTON_PADDING;
+
+    &:disabled {
+
+        @extend .disabledOpacity;
+
+        pointer-events: none;
+    }
+}
+
+.dialogButton {
+    
+    $GRADIENT_LIGHT: #FFFFFF;
+    $GRADIENT_DARK: #DEDEDE;
+
+    width: 100px;
+    height: 25px;
+    margin-top: $SHARED_DIALOG_PADDING;
+    margin-left: $SHARED_DIALOG_PADDING;
+    font-size: 12px;
+    padding-top: 1px;
+    background: linear-gradient($GRADIENT_LIGHT, $GRADIENT_DARK);
+    border: 1px solid #949494;
+    outline: none;
+
+    &:hover {
+
+        background: $GRADIENT_LIGHT;
+    }
+
+    &:active {
+
+        background: $GRADIENT_DARK;
+    }
+
+    &:focus {
+
+        border: $SHARED_DIALOG_FOCUS_BORDER;
+    }
+}

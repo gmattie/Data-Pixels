@@ -1,12 +1,12 @@
-@import "./modules/constants.scss";
+@import "./modules/sharedConstants.scss";
 @import "./modules/reset.scss";
 @import "./modules/fonts.scss";
 @import "./modules/animations.scss";
-@import "./modules/classes.scss";
+@import "./modules/classes/main.scss";
 
 body {
 
-    padding: $MARGIN;
+    padding: $SHARED_MARGIN;
     width: 100vw;
     height: 100vh;
     min-width: 600px;
@@ -18,20 +18,20 @@ body {
     #controls {
 
         display: block;
-        margin-bottom: $MARGIN - $CONTROL_BUTTON_PADDING * 2;
+        margin-bottom: $SHARED_MARGIN - $SHARED_CONTROL_BUTTON_PADDING * 2;
         font-size: 0;
 
         #group {
 
             display: flex;
             flex-direction: row;
-            margin-right: -($CONTROL_BUTTON_PADDING + $CONTROL_BUTTON_PADDING);
+            margin-right: -($SHARED_CONTROL_BUTTON_PADDING + $SHARED_CONTROL_BUTTON_PADDING);
 
             #error, input {
 
                 &:not(:first-child) {
 
-                    margin-left: $MARGIN / 2 - $CONTROL_BUTTON_PADDING;
+                    margin-left: $SHARED_MARGIN / 2 - $SHARED_CONTROL_BUTTON_PADDING;
                 }
             }
 
@@ -56,6 +56,11 @@ body {
     }
 
     #content {
+
+        $CONTENT_DROP_SHADOW: drop-shadow(0 0 2px #000000);
+        $CONTENT_MIN_SIZE: 160px;
+        $CODE_EDITOR_PADDING: 5px;
+        $LINE_NUMBERS_WIDTH: 38px;
 
         flex: 1;
         display: flex;
@@ -116,15 +121,15 @@ body {
                 
                 text-align: center;
                 pointer-events: none;
-                width: $MARGIN;
-                height: $MARGIN;
+                width: $SHARED_MARGIN;
+                height: $SHARED_MARGIN;
                 padding-top: 3px;
             }
 
             #frameViewControls {
 
                 position: absolute;
-                margin: $MARGIN / 2;
+                margin: $SHARED_MARGIN / 2;
                 z-index: 1;
                 pointer-events: none;
                 
@@ -136,7 +141,7 @@ body {
 
                     input:not(:first-child) {
 
-                        margin-left: $MARGIN / 2 - $CONTROL_BUTTON_PADDING;
+                        margin-left: $SHARED_MARGIN / 2 - $SHARED_CONTROL_BUTTON_PADDING;
                     }
 
                     #reflectHorizontal {
@@ -147,7 +152,7 @@ body {
 
                 #info {
                     
-                    margin-top: -($MARGIN / 2);
+                    margin-top: -($SHARED_MARGIN / 2);
                     font-size: 0.8em;
                     div::before {
 

@@ -2,6 +2,7 @@
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as App from "./app.js";
 import * as C from "../support/constants.js";
+import * as File from "./file.js";
 import * as Utils from "../support/utils.js";
 import Dialog from "../support/Dialog.js";
 
@@ -9,6 +10,7 @@ import Dialog from "../support/Dialog.js";
  * @description The <strong>popups.js</strong> module contains properties and functions pertaining to the initialization and control of modal dialog windows.
  * @requires app
  * @requires constants
+ * @requires file
  * @requires dialog
  * @requires sharedStates
  * @requires utils
@@ -140,8 +142,8 @@ function initImageSizeWarningDialog() {
     const content = createContent(C.CSSClass.DIALOG_CONTENT, image, text);
 
     M.ImageSizeWarningDialog = new Dialog(content, Dialog.Type.CONFIRM);
-    M.ImageSizeWarningDialog.addListener(Dialog.Event.OK, App.imageSizeOKHandler);
-    M.ImageSizeWarningDialog.addListener(Dialog.Event.CANCEL, App.imageSizeCancelHandler);
+    M.ImageSizeWarningDialog.addListener(Dialog.Event.OK, File.imageSizeOKHandler);
+    M.ImageSizeWarningDialog.addListener(Dialog.Event.CANCEL, File.imageSizeCancelHandler);
     M.ImageSizeWarningDialog.display();
 }
 

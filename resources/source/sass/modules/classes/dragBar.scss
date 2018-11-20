@@ -1,0 +1,21 @@
+@mixin setDragBar($width, $height, $cursor, $rotation) {
+
+    width: $width;
+    height: $height;
+    cursor: $cursor;
+
+    #dragIcon {
+
+        transform: rotate($rotation);
+    }
+}
+
+.dragBarHorizontal {
+
+    @include setDragBar(auto, $SHARED_MARGIN, row-resize, 90deg);
+}
+
+.dragBarVertical {
+
+    @include setDragBar($SHARED_MARGIN, auto, col-resize, 0deg);
+}

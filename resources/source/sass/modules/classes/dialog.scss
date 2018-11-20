@@ -1,0 +1,162 @@
+$DIALOG_TEXT_COLOR: #444444;
+
+.dialog {
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    text-align: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.dialogWindow {
+
+    padding: $SHARED_DIALOG_PADDING;
+    background-color: #F0F0F0;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.dialogContent {
+
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: stretch;
+    width: 500px;
+    text-align: left;
+}
+
+.dialogContentAbout {
+
+    @extend .dialogContent;
+
+    text-align: right;
+}
+
+.dialogContentSettings {
+
+    @extend .dialogContent;
+
+    margin-top: -10px;
+}
+
+.dialogImage {
+
+    width: 50px;
+    margin-top: 4px;
+    margin-right: $SHARED_DIALOG_PADDING;
+    filter: brightness(0);
+    pointer-events: none;
+    user-select: none;
+}
+
+.dialogImageAbout {
+
+    position: absolute;
+    width: 314px;
+    transform: translate(-48px, -33px) rotate(-14deg) scaleX(-1);
+    pointer-events: none;
+    user-select: none;
+}
+
+.dialogImageSettings {
+
+    @extend .dialogImage;
+
+    margin-top: 12px;
+}
+
+.dialogFieldset {
+
+    font-family: "Roboto Medium", sans-serif;
+    font-size: 14px;
+    color: $DIALOG_TEXT_COLOR;
+    background-color: rgba(0, 0, 0, 0.025);
+    padding: 10px 20px 20px;
+    border: 1px solid #D5D5D5;
+    width: 100%;
+    position: relative;
+
+    &:nth-child(1) {
+
+        margin-top: 2px;
+    }
+
+    &:nth-child(2) {
+
+        margin-top: 12px;
+    }
+}
+
+.dialogContainer {
+
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    position: relative;
+    top: 2px;
+
+    label {
+
+        line-height: 22px;
+        float: right;
+        clear: right;
+    }
+
+    select {
+
+        width: 60px;
+        margin-left: 10px;
+        outline: none;
+
+        &:focus {
+
+            border: $SHARED_DIALOG_FOCUS_BORDER;
+        }
+    }
+
+    input[type="checkbox"] {
+
+        position: relative;
+        top: 2px;
+        margin-left: 10px;
+        outline: none;
+
+        &:focus {
+
+            border: $SHARED_DIALOG_FOCUS_BORDER;
+        }
+    }
+}
+
+.dialogText {
+
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    color: $DIALOG_TEXT_COLOR;
+    white-space: pre-wrap;
+    width: 100%;
+}
+
+.dialogLink {
+
+    @extend .dialogText;
+
+    text-decoration: none;
+}
+
+.dialogShow {
+
+    @include animateDialog(true);
+}
+
+.dialogHide {
+
+    @include animateDialog(false);
+}

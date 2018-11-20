@@ -4,10 +4,10 @@ import * as C from "../support/constants.js";
 import * as Content from "./content.js";
 import * as Controls from "./controls.js";
 import * as Examples from "../dataPixels/examples.js";
+import * as File from "./file.js";
 import * as Layout from "./layout.js";
 import * as Main from "../main.js";
 import * as Popups from "./popups.js";
-import * as Utils from "../support/utils.js";
 import DataPixelsCodeFactory from "../dataPixels/DataPixelsCodeFactory.js";
 
 /**
@@ -15,11 +15,12 @@ import DataPixelsCodeFactory from "../dataPixels/DataPixelsCodeFactory.js";
  * @requires constants
  * @requires content
  * @requires controls
- * @requires dataPixelsCodeFactory
+ * @requires examples
+ * @requires file
  * @requires layout
+ * @requires main
  * @requires popups
  * @requires sharedStates
- * @requires utils
  * @module
  * 
  */
@@ -27,13 +28,11 @@ export {
 
     displayAboutDialog,
     writeExampleCode,
+    displayCode,
     displaySettingsDialog,
     executeCode,
-    imageSizeCancelHandler,
-    imageSizeOKHandler,
     init,
     loadDataPixelsClassCode,
-    readImageFile,
     setErrorMessage,
     setFrameViewHasImage,
     setMode,
@@ -47,8 +46,6 @@ export {
  * <ul>
  *     <li> DataPixelsClassCode </li>
  *     <li> DataPixelsClassCodeInternal </li>
- *     <li> File </li>
- *     <li> Image </li>
  *     <li> IsExecuting </li>
  * </ul>
  * 
@@ -60,8 +57,6 @@ const M = {
 
     DataPixelsClassCode: undefined,
     DataPixelsClassCodeInternal: undefined,
-    File: undefined,
-    Image: undefined,
     IsExecuting: undefined
 };
 
@@ -74,10 +69,10 @@ const M = {
 function init() {
 
     readStates();
-    initFileManagement();
-
+    
     Content.init();
     Controls.init();
+    File.init();
 }
 
 /**
@@ -205,7 +200,7 @@ function toggleLayout() {
  * @description Displays either manual or automatically generated program code in the Code Editor.
  * @param {string} code - The code to display in the Code Editor.
  * @param {boolean} [autoMode = true] - Sets the application mode based on how the supplied code was produced.
- * @private
+ * @public
  * @function
  * 
  */
@@ -385,222 +380,6 @@ function XHRErrorHandler(event) {
     xhr.removeEventListener(C.Event.LOAD, XHRErrorHandler);
 
     setErrorMessage(`${C.Label.ERROR} ${C.Label.FILE_READ}`);
-}
-
-/**
- * @description Initializes input file control and file drop functionality with applicable event handlers.
- * @private
- * @function
- * 
- */
-function initFileManagement() {
-
-    const dropTarget = document.body;
-
-    dropTarget.addEventListener(C.Event.DRAG_ENTER, (event) => {
-
-        event.stopPropagation();
-        event.preventDefault();
-
-        event.dataTransfer.effectAllowed = C.HTML.COPY;
-    });
-
-    dropTarget.addEventListener(C.Event.DRAG_OVER, (event) => {
-
-        event.stopPropagation();
-        event.preventDefault();
-        
-        event.dataTransfer.dropEffect = C.HTML.COPY;
-    });
-
-    dropTarget.addEventListener(C.Event.DROP, (event) => {
-
-        event.stopPropagation();
-        event.preventDefault();
-
-        validateDroppedFileType(event.dataTransfer.files[0]);
-    });
-}
-
-/**
- * @description Validates the file type of the dropped file as one of the application's supported image file types.
- * @param {Object} file - The dropped file.
- * @private
- * @function
- * 
- */
-function validateDroppedFileType(file) {
-
-    if (file) {
-
-        setMode(C.Mode.MANUAL);
-
-        M.File = file;
-        const fileType = M.File.type;
-
-        if (fileType !== C.Type.MIME_IMAGE_GIF && fileType !== C.Type.MIME_IMAGE_JPG && fileType !== C.Type.MIME_IMAGE_PNG) {
-
-            Popups.display(C.Dialog.FILE_TYPE_ERROR);
-
-            return;
-        }
-
-        setMode(C.Mode.AUTO);
-        readImageFile(file);
-    }
-}
-
-/**
- * @description Instantiates a FireReader object to read a dropped or opened image file
- * @param {Object} blob - The Blob object read by the FileReader.  
- * @param {string} [fileName = null] - Name of the opened image file assigned to the name property of the M.File object.
- * @public
- * @function
- * 
- */
-function readImageFile(blob, fileName = null) {
-
-    if (fileName) {
-
-        M.File = {name: fileName};
-    }
-
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(blob);
-    fileReader.addEventListener(C.Event.LOAD, fileReaderLoadHandler);
-    fileReader.addEventListener(C.Event.ERROR, fileReaderErrorHandler);
-}
-
-/**
- * @description Event handler called when the FileReader has finished loading the image file's contents.
- * @param {Object} event - The event object.
- * @private
- * @function
- * 
- */
-function fileReaderLoadHandler(event) {
-
-    const fileReader = event.target;
-    fileReader.removeEventListener(C.Event.LOAD, fileReaderLoadHandler);
-    fileReader.removeEventListener(C.Event.ERROR, fileReaderErrorHandler);
-    
-    const image = new Image();
-    image.src = fileReader.result;
-    image.addEventListener(C.Event.LOAD, imageLoadHandler);
-    image.addEventListener(C.Event.ERROR, imageErrorHandler);
-}
-
-/**
- * @description Event handler called when the FileReader has encountered an error.
- * @param {Object} event - The event object.
- * @private
- * @function
- * 
- */
-function fileReaderErrorHandler(event) {
-
-    const fileReader = event.target;
-    fileReader.removeEventListener(C.Event.LOAD, fileReaderLoadHandler);
-    fileReader.removeEventListener(C.Event.ERROR, fileReaderErrorHandler);
-
-    setErrorMessage(`${C.Label.ERROR} ${C.Label.FILE_READ}`);
-    setMode(C.Mode.MANUAL);
-}
-
-/**
- * @description Event handler called when the HTMLImageElement with dimension attributes has finished loading.
- * @param {Object} event - The event object.
- * @private
- * @function
- * 
- */
-function imageLoadHandler(event) {
-
-    const image = event.target;
-    image.removeEventListener(C.Event.LOAD, imageLoadHandler);
-    image.removeEventListener(C.Event.ERROR, imageErrorHandler);
-
-    if (image.width * image.height > C.Measurement.IMAGE_MAX_AREA) {
-
-        M.Image = image;
-
-        Popups.display(C.Dialog.IMAGE_SIZE_WARNING);
-    }
-    else {
-    
-        createAutoCode(image);
-    }
-}
-
-/**
- * @description Event handler called when the OK button of the Image Size Dialog is clicked.
- * @public
- * @function
- * 
- */
-function imageSizeOKHandler() {
-
-    createAutoCode(M.Image);
-
-    M.Image = null;
-}
-
-/**
- * @description Event handler called when the Cancel button of the Image Size Dialog is clicked.
- * @public
- * @function
- * 
- */
-function imageSizeCancelHandler() {
-
-    setMode(C.Mode.MANUAL);
-    
-    M.Image = null;
-}
-
-/**
- * @description Automatically generates program code by parsing an image file.
- * @param {Object} image - The image file to be parsed.
- * @private
- * @function
- * 
- */
-function createAutoCode(image) {
-
-    setErrorMessage(null);
-
-    const canvas = document.createElement(C.HTML.CANVAS);
-    canvas.width = image.width;
-    canvas.height = image.height;
-
-    const context = canvas.getContext(C.HTML.CANVAS_RENDERING_CONTEXT_2D);
-    context.drawImage(image, 0, 0);
-
-    const variableName = Utils.cleanFileName(M.File.name, "pixelData");                          
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-
-    S.AutoCode = new DataPixelsCodeFactory(variableName, imageData);
-    S.AutoCode.formatCode(S.Alignment, S.Description);
-    S.AutoCode.updateIndentation(S.Indentation);
-
-    displayCode(S.AutoCode.output);
-}
-
-/**
- * @description Event handler called when the HTMLImageElement has encountered an error.
- * @param {Object} event - The event object.
- * @private
- * @function
- * 
- */
-function imageErrorHandler(event) {
-
-    const image = event.target;
-    image.removeEventListener(C.Event.LOAD, imageLoadHandler);
-    image.removeEventListener(C.Event.ERROR, imageErrorHandler);
-
-    setErrorMessage(`${C.Label.ERROR} ${C.Label.FILE_CORRUPT}`);
-    setMode(C.Mode.MANUAL);
 }
 
 /**

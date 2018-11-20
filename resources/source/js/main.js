@@ -2,12 +2,15 @@
 import { SharedStates as S } from "./support/sharedStates.js";
 import * as App from "./application/app.js";
 import * as C from "./support/constants.js";
+import * as File from "./application/file.js";
 import * as Content from "./application/content.js";
 
 /**
  * @description The <strong>main.js</strong> module is the entry point for the application and contains the interface functionality for Electron.
  * @requires app
  * @requires constants
+ * @requires file
+ * @requires content
  * @requires sharedStates
  * @module
  * 
@@ -105,7 +108,7 @@ function initElectronInterface() {
                     }
 
                     const blob = new Blob([data]);
-                    App.readImageFile(blob, M.NodePath.basename(filePath));
+                    File.readImageFile(blob, M.NodePath.basename(filePath));
                 });
             });
         });
