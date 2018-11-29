@@ -83,15 +83,11 @@ $DIALOG_TEXT_COLOR: #444444;
     border: 1px solid #D5D5D5;
     width: 100%;
     position: relative;
+    margin-top: 12px;
 
-    &:nth-child(1) {
+    &:first-child {
 
         margin-top: 2px;
-    }
-
-    &:nth-child(2) {
-
-        margin-top: 12px;
     }
 }
 

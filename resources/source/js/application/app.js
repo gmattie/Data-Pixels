@@ -35,7 +35,7 @@ export {
     loadDataPixelsClassCode,
     setErrorMessage,
     setFrameViewHasImage,
-    setMode,
+    setCodeEditorMode,
     setTheme,
     toggleLayout,
     updateAutoCode
@@ -46,7 +46,7 @@ export {
  * <ul>
  *     <li> DataPixelsClassCode </li>
  *     <li> DataPixelsClassCodeInternal </li>
- *     <li> IsExecuting </li>
+ *     <li> ExecuteAfterLoad </li>
  * </ul>
  * 
  * @private
@@ -57,7 +57,7 @@ const M = {
 
     DataPixelsClassCode: undefined,
     DataPixelsClassCodeInternal: undefined,
-    IsExecuting: undefined
+    ExecuteAfterLoad: undefined
 };
 
 /**
@@ -85,18 +85,19 @@ function readStates() {
 
     S.Alignment = (localStorage.length) ? JSON.parse(localStorage.getItem(C.Persistence.ALIGNMENT)) : true;
     S.AutoCode = DataPixelsCodeFactory.fromJSON(localStorage.getItem(C.Persistence.AUTO_CODE)) || null;
+    S.AutoExecute = (localStorage.length) ? JSON.parse(localStorage.getItem(C.Persistence.AUTO_EXECUTE)) : false;
     S.Code = (localStorage.length) ? localStorage.getItem(C.Persistence.CODE) : Examples.basic;
     S.CodeEditorFlexGrow = localStorage.getItem(C.Persistence.CODE_EDITOR_FLEX_GROW) || 0.65;
-    S.Description = (localStorage.length) ? JSON.parse(localStorage.getItem(C.Persistence.DESCRIPTION)) : false;
+    S.Description = (localStorage.length) ? JSON.parse(localStorage.getItem(C.Persistence.DESCRIPTION)) : true;
     S.FrameViewFlexGrow = localStorage.getItem(C.Persistence.FRAME_VIEW_FLEX_GROW) || 0.35;
-    S.Mode = localStorage.getItem(C.Persistence.MODE) || C.Mode.MANUAL;
+    S.CodeEditorMode = localStorage.getItem(C.Persistence.MODE) || C.Mode.MANUAL;
     S.Indentation = localStorage.getItem(C.Persistence.INDENTATION) || C.Indentation.INDENT_4;
     S.Orientation = localStorage.getItem(C.Persistence.ORIENTATION) || C.Orientation.VERTICAL;
     S.Theme = localStorage.getItem(C.Persistence.THEME) || C.Theme.DARK;
 
     window.addEventListener(C.Event.BEFORE_UNLOAD, writeStates);
 
-    setMode(S.Mode);
+    setCodeEditorMode(S.CodeEditorMode);
     setTheme(S.Theme);
 }
 
@@ -113,12 +114,13 @@ function writeStates() {
     try {
 
         localStorage.setItem(C.Persistence.ALIGNMENT, S.Alignment);
-        localStorage.setItem(C.Persistence.AUTO_CODE, (S.Mode === C.Mode.AUTO) ? JSON.stringify(S.AutoCode) : null);
+        localStorage.setItem(C.Persistence.AUTO_CODE, (S.CodeEditorMode === C.Mode.AUTO) ? JSON.stringify(S.AutoCode) : null);
+        localStorage.setItem(C.Persistence.AUTO_EXECUTE, S.AutoExecute);
         localStorage.setItem(C.Persistence.CODE_EDITOR_FLEX_GROW, S.CodeEditorFlexGrow);
         localStorage.setItem(C.Persistence.CODE, C.HTMLElement.TEXT_AREA.value);
         localStorage.setItem(C.Persistence.DESCRIPTION, S.Description);
         localStorage.setItem(C.Persistence.FRAME_VIEW_FLEX_GROW, S.FrameViewFlexGrow);
-        localStorage.setItem(C.Persistence.MODE, S.Mode);
+        localStorage.setItem(C.Persistence.MODE, S.CodeEditorMode);
         localStorage.setItem(C.Persistence.INDENTATION, S.Indentation);
         localStorage.setItem(C.Persistence.ORIENTATION, S.Orientation);
         localStorage.setItem(C.Persistence.THEME, S.Theme);
@@ -130,23 +132,23 @@ function writeStates() {
 }
 
 /**
- * @description The mode determines which formatting options are available to the automatically generated program code written in the Code Editor.
- * @param {number} mode - The mode value is either 0 (Automatic) or 1 (Manual).
+ * @description The code editor mode determines which formatting options are available to the automatically generated program code written in the Code Editor.
+ * @param {number} mode - The mode value must be either C.Mode.AUTO or C.Mode.MANUAL.
  * @private
  * @function
  * 
  */
-function setMode(mode) {
+function setCodeEditorMode(mode) {
 
-    S.Mode = mode;
+    S.CodeEditorMode = mode;
 
-    if (S.Mode === C.Mode.MANUAL) {
-
-        C.HTMLElement.TEXT_AREA.removeEventListener(C.Event.INPUT, textInputManualModeHandler);
-    }
-    else if (S.Mode === C.Mode.AUTO) {
+    if (S.CodeEditorMode === C.Mode.AUTO) {
 
         C.HTMLElement.TEXT_AREA.addEventListener(C.Event.INPUT, textInputManualModeHandler);
+    }
+    else if (S.CodeEditorMode === C.Mode.MANUAL) {
+
+        C.HTMLElement.TEXT_AREA.removeEventListener(C.Event.INPUT, textInputManualModeHandler);
     }
 }
 
@@ -158,12 +160,12 @@ function setMode(mode) {
  */
 function textInputManualModeHandler() {
 
-    setMode(C.Mode.MANUAL);
+    setCodeEditorMode(C.Mode.MANUAL);
 }
 
 /**
  * @description The set theme applies a cohesive visual style throughout the application.  
- * @param {string} theme - The theme value is either "Dark" or "Light".
+ * @param {string} theme - The theme value must be either C.Theme.DARK or C.Theme.LIGHT.
  * @private
  * @function
  * 
@@ -212,13 +214,16 @@ function displayCode(code, autoMode = true) {
 
     document.execCommand(C.TextArea.COMMAND_INSERT, false, code);
 
+
     if (autoMode) {
         
-        setMode(C.Mode.AUTO);
+        setCodeEditorMode(C.Mode.AUTO);
     }
 
-    Content.updateLineNumbers();
-    Controls.updateExecuteButton();
+    if (!S.AutoExecute) {
+    
+        Controls.updateExecuteButton();
+    }
 }
 
 /**
@@ -240,7 +245,7 @@ function executeCode() {
             setErrorMessage(error);
         };
 
-        M.IsExecuting = true;
+        M.ExecuteAfterLoad = true;
 
         loadDataPixelsClassCode();
 
@@ -263,19 +268,23 @@ function executeCode() {
     setErrorMessage(null);
 
     let code = C.HTMLElement.TEXT_AREA.value;
-    code = code.replace(/import .*?[;|\n]/gmi, "");
 
-    const runtimeScript = document.createElement(C.HTML.SCRIPT);
-    runtimeScript.type = C.HTML.SCRIPT_TYPE;
-    runtimeScript.text = `try{ (function(){ ${M.DataPixelsClassCodeInternal}${code} })(); }catch(error){ parent.setErrorMessageDelegate(error); }`;
+    if (code) {
 
-    headTag.appendChild(runtimeScript);
-    headTag.removeChild(runtimeScript);
+        code = code.replace(/import .*?[;|\n]/gmi, "");
 
-    frameViewBody.firstChild.style.pointerEvents = C.CSS.NONE;
-    frameViewBody.firstChild.style.userSelect = C.CSS.NONE;
+        const runtimeScript = document.createElement(C.HTML.SCRIPT);
+        runtimeScript.type = C.HTML.SCRIPT_TYPE;
+        runtimeScript.text = `try{ (function(){ ${M.DataPixelsClassCodeInternal}${code} })(); }catch(error){ parent.setErrorMessageDelegate(error); }`;
 
-    setFrameViewHasImage(true);
+        headTag.appendChild(runtimeScript);
+        headTag.removeChild(runtimeScript);
+
+        frameViewBody.firstChild.style.pointerEvents = C.CSS.NONE;
+        frameViewBody.firstChild.style.userSelect = C.CSS.NONE;
+
+        setFrameViewHasImage(true);
+    }
 }
 
 /**
@@ -354,9 +363,9 @@ function XHRLoadHandler(event) {
     M.DataPixelsClassCode = xhr.responseText;
     M.DataPixelsClassCodeInternal = xhr.responseText.replace(/(export default DataPixels;)/gi, "");
 
-    if (M.IsExecuting) {
+    if (M.ExecuteAfterLoad) {
 
-        M.IsExecuting = false;
+        M.ExecuteAfterLoad = false;
 
         executeCode();
     }
@@ -390,7 +399,7 @@ function XHRErrorHandler(event) {
  */
 function updateAutoCode() {
 
-    if (S.Mode === C.Mode.AUTO && S.AutoCode) {
+    if (S.CodeEditorMode === C.Mode.AUTO && S.AutoCode) {
 
         S.AutoCode.formatCode(S.Alignment, S.Description);
         S.AutoCode.updateIndentation(S.Indentation);

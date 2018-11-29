@@ -26,8 +26,9 @@ export {
  * @description An object containing the following members with module scope:
  * <ul>
  *      <li> Buttons </li>
- *      <li> ScaleTimeout </li>
+ *      <li> ButtonsFrameView </li>
  *      <li> ScaleInterval </li>
+ *      <li> ScaleTimeout </li>
  * </ul>
  * 
  * @private
@@ -38,8 +39,8 @@ const M = {
 
     Buttons: undefined,
     ButtonsFrameView: undefined,
-    ScaleTimeout: undefined,
     ScaleInterval: undefined,
+    ScaleTimeout: undefined
 };
 
 /**
@@ -209,7 +210,7 @@ function scaleButtonClickHandler(event) {
             
             updateScale();
             
-            M.ScaleTimeout = setTimeout(() => M.ScaleInterval = setInterval(updateScale, 20), 500);
+            M.ScaleTimeout = setTimeout(() => M.ScaleInterval = setInterval(updateScale, 20), C.Measurement.SCALE_TIMEOUT);
             
             break;
         }
@@ -240,23 +241,24 @@ function reflectButtonClickHandler(event) {
 }
 
 /**
- * @description Determines whether or not to disable or enable the Execute button.
+ * @description Determines whether or not to disable, enable, hide or show the Execute button.
  * @public
  * @function
  * 
  */
 function updateExecuteButton() {
 
-    const textArea = C.HTMLElement.TEXT_AREA;
     const executeButton = C.HTMLElement.BUTTON_EXECUTE;
+    const textArea = C.HTMLElement.TEXT_AREA;
 
-    executeButton.disabled = (textArea.value === "");
+    executeButton.disabled = (textArea.value.trim() === "" || S.AutoExecute);
+    executeButton.style.display = (S.AutoExecute) ? C.CSS.NONE : C.CSS.BLOCK;
 
     Main.updateElectronRunMenuItem();
 }
 
 /**
- * @description Updates the theme, "Dark" to "Light" or "Light" to "Dark", for each control that has already been initialized.
+ * @description Updates the theme for each control that has already been initialized.
  * @public
  * @function
  * 

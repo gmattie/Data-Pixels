@@ -88,7 +88,7 @@ function validateDroppedFileType(file) {
 
     if (file) {
 
-        App.setMode(C.Mode.MANUAL);
+        App.setCodeEditorMode(C.Mode.MANUAL);
 
         M.File = file;
         const fileType = M.File.type;
@@ -100,7 +100,7 @@ function validateDroppedFileType(file) {
             return;
         }
 
-        App.setMode(C.Mode.AUTO);
+        App.setCodeEditorMode(C.Mode.AUTO);
         readImageFile(file);
     }
 }
@@ -159,7 +159,7 @@ function fileReaderErrorHandler(event) {
     fileReader.removeEventListener(C.Event.ERROR, fileReaderErrorHandler);
 
     App.setErrorMessage(`${C.Label.ERROR} ${C.Label.FILE_READ}`);
-    App.setMode(C.Mode.MANUAL);
+    App.setCodeEditorMode(C.Mode.MANUAL);
 }
 
 /**
@@ -201,7 +201,7 @@ function imageErrorHandler(event) {
     image.removeEventListener(C.Event.ERROR, imageErrorHandler);
 
     App.setErrorMessage(`${C.Label.ERROR} ${C.Label.FILE_CORRUPT}`);
-    App.setMode(C.Mode.MANUAL);
+    App.setCodeEditorMode(C.Mode.MANUAL);
 }
 
 /**
@@ -253,7 +253,7 @@ function imageSizeOKHandler() {
  */
 function imageSizeCancelHandler() {
 
-    App.setMode(C.Mode.MANUAL);
+    App.setCodeEditorMode(C.Mode.MANUAL);
     
     M.Image = null;
 }

@@ -26,9 +26,11 @@ export {
 /**
  * @description An object containing the following members with module scope:
  * <ul>
+ *     <li> AutoExecuteTimeout </li>
  *     <li> DragPointOrigin </li>
  *     <li> LinesTotal </li>
  *     <li> Image </li>
+ *     <li> IsCodeExecutable </li>
  *     <li> Transform </li>
  * </ul>
  * 
@@ -38,9 +40,11 @@ export {
  */
 const M = {
 
+    AutoExecuteTimeout: undefined,
     DragPointOrigin: undefined,
     LinesTotal: undefined,
     Image: undefined,
+    IsCodeExecutable: undefined,
 
     Transform: {
 
@@ -88,9 +92,9 @@ function initCodeEditor() {
             
             event.preventDefault();
 
-            if (S.Mode === C.Mode.AUTO) {
+            if (S.CodeEditorMode === C.Mode.AUTO) {
 
-                App.setMode(C.Mode.MANUAL);
+                App.setCodeEditorMode(C.Mode.MANUAL);
             }
 
             const text = textArea.value;
@@ -158,13 +162,54 @@ function initCodeEditor() {
     textArea.addEventListener(C.Event.SCROLL, () => C.HTMLElement.LINE_NUMBERS.scrollTop = textArea.scrollTop);
     textArea.addEventListener(C.Event.INPUT, () => {
 
-        updateLineNumbers();
+        const code = textArea.value.trim();
+        
+        if (S.AutoExecute) {
 
-        Controls.updateExecuteButton();
+            clearTimeout(M.AutoExecuteTimeout);
+            M.AutoExecuteTimeout = setTimeout(App.executeCode, C.Measurement.AUTO_EXECUTE_TIMEOUT);
+        }
+        else {
+            
+            if ((M.IsCodeExecutable && code === "") || (!M.IsCodeExecutable && code !== "")) {
+                
+                Controls.updateExecuteButton();
+            }
+        }
+        
+        M.IsCodeExecutable = (code !== "");
+        updateLineNumbers();
     });
+
+    M.IsCodeExecutable = Boolean(S.Code);
 
     textArea.textContent = S.Code;
     textArea.dispatchEvent(new Event(C.Event.INPUT));
+}
+
+/**
+ * @description Updates the Code Editor's line numbers according to the total number of lines present in the text area.
+ * @public
+ * @function
+ * 
+ */
+function updateLineNumbers() {
+
+    const text = C.HTMLElement.TEXT_AREA.value;
+    const newLinesLength = (text.match(/\n/gm)||[]).length + 1;
+
+    if (M.LinesTotal !== newLinesLength) {
+
+        M.LinesTotal = newLinesLength;
+        C.HTMLElement.LINE_NUMBERS.textContent = "";
+
+        for (let i = 1; i <= M.LinesTotal; i++) {
+
+            C.HTMLElement.LINE_NUMBERS.textContent += `${i}\n`;
+        }
+
+        C.HTMLElement.LINE_NUMBERS.textContent += C.Unicode.NO_BREAK_SPACE;
+    }
 }
 
 /**
@@ -198,6 +243,64 @@ function initDragBar() {
             addEventListener(C.Event.MOUSE_UP, dragBarMouseUpHandler);
         }
     });
+}
+
+/**
+ * @description Event handler for moving the Drag Bar with the mouse.
+ * @param {object} event - The event object.
+ * @private
+ * @function
+ * 
+ */
+function dragBarMouseMoveHandler(event) {
+
+    const codeEditor = C.HTMLElement.CODE_EDITOR;
+    const frameView = C.HTMLElement.FRAME_VIEW;
+    const contentMinSize = C.Measurement.CONTENT_MIN_SIZE;
+
+    if (S.Orientation === C.Orientation.HORIZONTAL) {
+
+        const offset = event.clientY - M.DragPointOrigin.y;
+
+        const codeEditorMaxHeight = S.CodeEditorSize.height + S.FrameViewSize.height - contentMinSize;
+        const codeEditorHeight = Math.min(Math.max(S.CodeEditorSize.height + offset, contentMinSize), codeEditorMaxHeight);
+        
+        const frameViewMaxHeight = S.FrameViewSize.height + S.CodeEditorSize.height - contentMinSize;
+        const frameViewHeight = Math.min(Math.max(S.FrameViewSize.height - offset, contentMinSize), frameViewMaxHeight);
+
+        codeEditor.style.height = `${codeEditorHeight}${C.CSS.PX}`;
+        frameView.style.height = `${frameViewHeight}${C.CSS.PX}`;
+
+        return;
+    }
+
+    if (S.Orientation === C.Orientation.VERTICAL) {
+
+        const offset = event.clientX - M.DragPointOrigin.x;
+
+        const codeEditorMaxWidth = S.CodeEditorSize.width + S.FrameViewSize.width - contentMinSize;
+        const codeEditorWidth = Math.min(Math.max(S.CodeEditorSize.width + offset, contentMinSize), codeEditorMaxWidth);
+
+        const frameViewMaxWidth = S.FrameViewSize.width + S.CodeEditorSize.width - contentMinSize;
+        const frameViewWidth = Math.min(Math.max(S.FrameViewSize.width - offset, contentMinSize), frameViewMaxWidth);
+
+        codeEditor.style.width = `${codeEditorWidth}${C.CSS.PX}`;
+        frameView.style.width = `${frameViewWidth}${C.CSS.PX}`;
+    }
+}
+
+/**
+ * @description Event handler for releasing the Drag Bar from the mouse.
+ * @private
+ * @function
+ * 
+ */
+function dragBarMouseUpHandler() {
+
+    Layout.setContentDisplayType(C.CSS.FLEX);
+
+    removeEventListener(C.Event.MOUSE_UP, dragBarMouseUpHandler);
+    removeEventListener(C.Event.MOUSE_MOVE, dragBarMouseMoveHandler);
 }
 
 /**
@@ -374,87 +477,4 @@ function updateImageInfo() {
     C.HTMLElement.FRAME_VIEW_INFO_SCALE.textContent = M.Transform.scale.toFixed(2);
     C.HTMLElement.FRAME_VIEW_INFO_WIDTH.textContent = Math.round(M.Image.offsetWidth * M.Transform.scale);
     C.HTMLElement.FRAME_VIEW_INFO_HEIGHT.textContent = Math.round(M.Image.offsetHeight * M.Transform.scale);
-}
-
-/**
- * @description Updates the Code Editor's line numbers according to the total number of lines present in the text area.
- * @public
- * @function
- * 
- */
-function updateLineNumbers() {
-
-    const text = C.HTMLElement.TEXT_AREA.value;
-    const newLinesLength = (text.match(/\n/gm)||[]).length + 1;
-
-    if (M.LinesTotal !== newLinesLength) {
-
-        M.LinesTotal = newLinesLength;
-        C.HTMLElement.LINE_NUMBERS.textContent = "";
-
-        for (let i = 1; i <= M.LinesTotal; i++) {
-
-            C.HTMLElement.LINE_NUMBERS.textContent += `${i}\n`;
-        }
-
-        C.HTMLElement.LINE_NUMBERS.textContent += C.Unicode.NO_BREAK_SPACE;
-    }
-}
-
-/**
- * @description Event handler for moving the Drag Bar with the mouse.
- * @param {object} event - The event object.
- * @private
- * @function
- * 
- */
-function dragBarMouseMoveHandler(event) {
-
-    const codeEditor = C.HTMLElement.CODE_EDITOR;
-    const frameView = C.HTMLElement.FRAME_VIEW;
-    const contentMinSize = C.Measurement.CONTENT_MIN_SIZE;
-
-    if (S.Orientation === C.Orientation.HORIZONTAL) {
-
-        const offset = event.clientY - M.DragPointOrigin.y;
-
-        const codeEditorMaxHeight = S.CodeEditorSize.height + S.FrameViewSize.height - contentMinSize;
-        const codeEditorHeight = Math.min(Math.max(S.CodeEditorSize.height + offset, contentMinSize), codeEditorMaxHeight);
-        
-        const frameViewMaxHeight = S.FrameViewSize.height + S.CodeEditorSize.height - contentMinSize;
-        const frameViewHeight = Math.min(Math.max(S.FrameViewSize.height - offset, contentMinSize), frameViewMaxHeight);
-
-        codeEditor.style.height = `${codeEditorHeight}${C.CSS.PX}`;
-        frameView.style.height = `${frameViewHeight}${C.CSS.PX}`;
-
-        return;
-    }
-
-    if (S.Orientation === C.Orientation.VERTICAL) {
-
-        const offset = event.clientX - M.DragPointOrigin.x;
-
-        const codeEditorMaxWidth = S.CodeEditorSize.width + S.FrameViewSize.width - contentMinSize;
-        const codeEditorWidth = Math.min(Math.max(S.CodeEditorSize.width + offset, contentMinSize), codeEditorMaxWidth);
-
-        const frameViewMaxWidth = S.FrameViewSize.width + S.CodeEditorSize.width - contentMinSize;
-        const frameViewWidth = Math.min(Math.max(S.FrameViewSize.width - offset, contentMinSize), frameViewMaxWidth);
-
-        codeEditor.style.width = `${codeEditorWidth}${C.CSS.PX}`;
-        frameView.style.width = `${frameViewWidth}${C.CSS.PX}`;
-    }
-}
-
-/**
- * @description Event handler for releasing the Drag Bar from the mouse.
- * @private
- * @function
- * 
- */
-function dragBarMouseUpHandler() {
-
-    Layout.setContentDisplayType(C.CSS.FLEX);
-
-    removeEventListener(C.Event.MOUSE_UP, dragBarMouseUpHandler);
-    removeEventListener(C.Event.MOUSE_MOVE, dragBarMouseMoveHandler);
 }

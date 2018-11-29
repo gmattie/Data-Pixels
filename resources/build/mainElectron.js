@@ -170,7 +170,7 @@ app.on("ready", () => {
     Menu.setApplicationMenu(menu);
 
     //Menu Items Enabled State
-    const runMenuItem = menu.items[0 + macMenuIndex].submenu.items[1];
+    const runMenuItem = menu.items[0 + macMenuIndex].submenu.items[2];
     
     const layoutHorizontalMenuItem = menu.items[2 + macMenuIndex].submenu.items[0];
     const layoutVerticalMenuItem = menu.items[2 + macMenuIndex].submenu.items[1];

@@ -501,34 +501,37 @@ Object.freeze(Indentation);
  * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
  *     <li> CANCEL </li>
- *     <li> CONTROLS_EXECUTE_CODE </li>
- *     <li> CONTROLS_REFLECT_HORIZONTALLY </li>
- *     <li> CONTROLS_REFLECT_VERTICALLY </li>
+ *     <li> CONTROLS_EXECUTE </li>
  *     <li> CONTROLS_LAYOUT_HORIZONTAL </li>
  *     <li> CONTROLS_LAYOUT_VERTICAL </li>
+ *     <li> CONTROLS_REFLECT_HORIZONTALLY </li>
+ *     <li> CONTROLS_REFLECT_VERTICALLY </li>
  *     <li> CONTROLS_RESET </li>
  *     <li> CONTROLS_SCALE_DOWN </li>
  *     <li> CONTROLS_SCALE_UP </li>
  *     <li> CONTROLS_SETTINGS </li>
- *     <li> DIALOG_ABOUT </li>
  *     <li> DIALOG_ABOUT_URL </li>
+ *     <li> DIALOG_ABOUT </li>
  *     <li> DIALOG_FILE_TYPE </li>
  *     <li> DIALOG_LARGE_IMAGE </li>
  *     <li> DIALOG_SETTINGS_APPEARANCE </li>
- *     <li> DIALOG_SETTINGS_AUTO_CODE_ALIGNMENT </li>
- *     <li> DIALOG_SETTINGS_AUTO_CODE_ALIGNMENT_TOOLTIP </li>
- *     <li> DIALOG_SETTINGS_AUTO_CODE_DESCRIPTION </li>
- *     <li> DIALOG_SETTINGS_AUTO_CODE_DESCRIPTION_TOOLTIP </li>
- *     <li> DIALOG_SETTINGS_CODE </li>
- *     <li> DIALOG_SETTINGS_DEFAULT_INDENTATION </li>
+ *     <li> DIALOG_SETTINGS_AUTO_EXECUTION_TOOLTIP </li>
+ *     <li> DIALOG_SETTINGS_AUTO_EXECUTION </li>
+ *     <li> DIALOG_SETTINGS_CODE_EDITOR </li>
  *     <li> DIALOG_SETTINGS_DEFAULT_INDENTATION_TOOLTIP </li>
- *     <li> DIALOG_SETTINGS_THEME </li>
+ *     <li> DIALOG_SETTINGS_DEFAULT_INDENTATION </li>
+ *     <li> DIALOG_SETTINGS_IMAGE_IMPORTS_ALIGNMENT_TOOLTIP </li>
+ *     <li> DIALOG_SETTINGS_IMAGE_IMPORTS_ALIGNMENT </li>
+ *     <li> DIALOG_SETTINGS_IMAGE_IMPORTS_DESCRIPTION_TOOLTIP </li>
+ *     <li> DIALOG_SETTINGS_IMAGE_IMPORTS_DESCRIPTION </li>
+ *     <li> DIALOG_SETTINGS_IMAGE_IMPORTS </li>
  *     <li> DIALOG_SETTINGS_THEME_TOOLTIP </li>
+ *     <li> DIALOG_SETTINGS_THEME </li>
  *     <li> ELECTRON_DIALOG_EXPORT_TITLE </li>
  *     <li> ELECTRON_DIALOG_EXPORT_TYPE </li>
- *     <li> ELECTRON_DIALOG_IMPORT </li>
  *     <li> ELECTRON_DIALOG_IMPORT_TITLE </li>
  *     <li> ELECTRON_DIALOG_IMPORT_TYPE </li>
+ *     <li> ELECTRON_DIALOG_IMPORT </li>
  *     <li> ERROR </li>
  *     <li> FILE_CORRUPT </li>
  *     <li> FILE_NOT_FOUND </li>
@@ -536,8 +539,6 @@ Object.freeze(Indentation);
  *     <li> FRAME_VIEW_HEIGHT </li>
  *     <li> FRAME_VIEW_SCALE </li>
  *     <li> FRAME_VIEW_WIDTH </li>
- *     <li> FRAME_VIEW_X_POS </li>
- *     <li> FRAME_VIEW_Y_POS </li>
  *     <li> OK </li>
  * </ul>
  * 
@@ -548,10 +549,10 @@ const Label = {
     
     CANCEL: "Cancel",
     CONTROLS_EXECUTE: "Execute code",
-    CONTROLS_REFLECT_HORIZONTALLY: "Reflect Horizontally",
-    CONTROLS_REFLECT_VERTICALLY: "Reflect Vertically",
     CONTROLS_LAYOUT_HORIZONTAL: "Layout Horizontal",
     CONTROLS_LAYOUT_VERTICAL: "Layout Vertical",
+    CONTROLS_REFLECT_HORIZONTALLY: "Reflect Horizontally",
+    CONTROLS_REFLECT_VERTICALLY: "Reflect Vertically",
     CONTROLS_RESET: "Reset",
     CONTROLS_SCALE_DOWN: "Scale Down",
     CONTROLS_SCALE_UP: "Scale Up",
@@ -561,13 +562,16 @@ const Label = {
     DIALOG_FILE_TYPE: "Illegal file type.  This application only supports raster based image files with the following type extensions:\n\nPNG, JPG, GIF.",
     DIALOG_LARGE_IMAGE: "This application is designed to process small, icon-sized image files.  Importing larger image files may result in decreased performance.\n\nDo you wish to proceed?",
     DIALOG_SETTINGS_APPEARANCE: "APPEARANCE",
-    DIALOG_SETTINGS_AUTO_CODE_ALIGNMENT_TOOLTIP: "Visually aligns the pixelData array columns of initial, unedited, automatically generated program code.",
-    DIALOG_SETTINGS_AUTO_CODE_ALIGNMENT: "Auto Code Alignment:",
-    DIALOG_SETTINGS_AUTO_CODE_DESCRIPTION_TOOLTIP: "Prefixes R, G, B and A to the pixelData array values of initial, unedited, automatically generated program code.",
-    DIALOG_SETTINGS_AUTO_CODE_DESCRIPTION: "Auto Code Description:",
-    DIALOG_SETTINGS_CODE: "CODE",
+    DIALOG_SETTINGS_AUTO_EXECUTION_TOOLTIP: "Toggles automatic execution of code while the code is being written.",
+    DIALOG_SETTINGS_AUTO_EXECUTION: "Automatic Code Execution:",
+    DIALOG_SETTINGS_CODE_EDITOR: "CODE EDITOR",
     DIALOG_SETTINGS_DEFAULT_INDENTATION_TOOLTIP: "Updates the indenting tab spaces of the Code Editor.",
     DIALOG_SETTINGS_DEFAULT_INDENTATION: "Default Indentation:",
+    DIALOG_SETTINGS_IMAGE_IMPORTS_ALIGNMENT_TOOLTIP: "Visually aligns the \"pixelData\" array columns of unedited, automatically generated code from imported image files.",
+    DIALOG_SETTINGS_IMAGE_IMPORTS_ALIGNMENT: "Generate Aligned Code:",
+    DIALOG_SETTINGS_IMAGE_IMPORTS_DESCRIPTION_TOOLTIP: "Prefixes \"R\", \"G\", \"B\" and \"A\" to the \"pixelData\" array values of unedited, automatically generated code from imported image files.",
+    DIALOG_SETTINGS_IMAGE_IMPORTS_DESCRIPTION: "Generate Descriptive Code:",
+    DIALOG_SETTINGS_IMAGE_IMPORTS: "IMAGE IMPORTS",
     DIALOG_SETTINGS_THEME_TOOLTIP: "Updates the visual appearance of the application.",
     DIALOG_SETTINGS_THEME: "Theme:",
     ELECTRON_DIALOG_EXPORT_TITLE: "Save DataPixels.js File",
@@ -590,10 +594,12 @@ Object.freeze(Label);
 /**
  * @description Properties of type <strong>{number}</strong> consist of:
  * <ul>
+ *     <li> AUTO_EXECUTE_TIMEOUT </li>
  *     <li> CONTENT_MIN_SIZE </li>
- *     <li> IMAGE_MAX_AREA </li>
  *     <li> FRAME_VIEW_MARGIN </li>
+ *     <li> IMAGE_MAX_AREA </li>
  *     <li> SCALE_STEP </li>
+ *     <li> SCALE_TIMEOUT </li>
  * </ul>
  * 
  * @constant
@@ -601,10 +607,12 @@ Object.freeze(Label);
  */
 const Measurement = {
 
+    AUTO_EXECUTE_TIMEOUT: 500,
     CONTENT_MIN_SIZE: 160,
-    IMAGE_MAX_AREA: 10000,
     FRAME_VIEW_MARGIN: 0.85,
-    SCALE_STEP: 0.01
+    IMAGE_MAX_AREA: 10000,
+    SCALE_STEP: 0.01,
+    SCALE_TIMEOUT: 500
 };
 
 Object.freeze(Measurement);
@@ -621,8 +629,8 @@ Object.freeze(Measurement);
  */
 const Mode = {
 
-    AUTO: "auto",
-    MANUAL: "manual"
+    AUTO: 0,
+    MANUAL: 1
 };
 
 Object.freeze(Mode);
@@ -650,6 +658,7 @@ Object.freeze(Orientation);
  * <ul>
  *     <li> ALIGNMENT </li>
  *     <li> AUTO_CODE </li>
+ *     <li> AUTO_EXECUTE </li>
  *     <li> DESCRIPTION </li>
  *     <li> CODE_EDITOR_FLEX_GROW </li>
  *     <li> CODE </li>
@@ -667,6 +676,7 @@ const Persistence = {
 
     ALIGNMENT: "alignment",
     AUTO_CODE: "autoCode",
+    AUTO_EXECUTE: "autoExecute",
     DESCRIPTION: "description",
     CODE_EDITOR_FLEX_GROW: "codeEditorFlexGrow",
     CODE: "code",

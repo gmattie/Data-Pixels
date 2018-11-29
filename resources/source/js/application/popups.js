@@ -2,6 +2,7 @@
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as App from "./app.js";
 import * as C from "../support/constants.js";
+import * as Controls from "./controls.js";
 import * as File from "./file.js";
 import * as Utils from "../support/utils.js";
 import Dialog from "../support/Dialog.js";
@@ -58,21 +59,25 @@ function display(dialogID) {
         case C.Dialog.ABOUT:
 
             (M.AboutDialog) ? M.AboutDialog.display() : initAboutDialog();
+
             break;
 
         case C.Dialog.FILE_TYPE_ERROR:
 
             (M.FileTypeErrorDialog) ? M.FileTypeErrorDialog.display() : initFileTypeErrorDialog();
+
             break;
 
         case C.Dialog.IMAGE_SIZE_WARNING:
 
             (M.ImageSizeWarningDialog) ? M.ImageSizeWarningDialog.display() : initImageSizeWarningDialog();
+            
             break;
 
         case C.Dialog.SETTINGS:
         
             (M.SettingsDialog) ? M.SettingsDialog.display() : initSettingsDialog();
+
             break;
     }
 }
@@ -157,33 +162,80 @@ function initSettingsDialog() {
 
     const image = createImage(C.ImageSource.SETTINGS, C.CSSClass.DIALOG_IMAGE_SETTINGS);
 
-    const themeDropdownMenu = createDropdownMenu(C.Label.DIALOG_SETTINGS_THEME,
-                                                 C.Label.DIALOG_SETTINGS_THEME_TOOLTIP,
-                                                 [C.Theme.DARK, C.Theme.LIGHT],
-                                                 S.Theme,
-                                                 themeChangeHandler);
+    const themeDropdownMenu = createDropdownMenu(
+        
+        C.Label.DIALOG_SETTINGS_THEME,
+        C.Label.DIALOG_SETTINGS_THEME_TOOLTIP,
+        [C.Theme.DARK, C.Theme.LIGHT],
+        S.Theme,
+        themeChangeHandler
+    );
 
-    const indentationDropdownMenu = createDropdownMenu(C.Label.DIALOG_SETTINGS_DEFAULT_INDENTATION,
-                                                       C.Label.DIALOG_SETTINGS_DEFAULT_INDENTATION_TOOLTIP,
-                                                       [C.Indentation.INDENT_2, C.Indentation.INDENT_4, C.Indentation.INDENT_8],
-                                                       S.Indentation,
-                                                       indentationChangeHandler);
+    const autoExecuteCheckBox = createCheckBox(
 
-    const alignmentCheckBox = createCheckBox(C.Label.DIALOG_SETTINGS_AUTO_CODE_ALIGNMENT,
-                                             C.Label.DIALOG_SETTINGS_AUTO_CODE_ALIGNMENT_TOOLTIP,
-                                             S.Alignment,
-                                             alignmentChangeHandler);
+        C.Label.DIALOG_SETTINGS_AUTO_EXECUTION,
+        C.Label.DIALOG_SETTINGS_AUTO_EXECUTION_TOOLTIP,
+        S.AutoExecute,
+        autoExecuteChangeHandler
+    );
+
+    const indentationDropdownMenu = createDropdownMenu(
+        
+        C.Label.DIALOG_SETTINGS_DEFAULT_INDENTATION,
+        C.Label.DIALOG_SETTINGS_DEFAULT_INDENTATION_TOOLTIP,
+        [C.Indentation.INDENT_2, C.Indentation.INDENT_4, C.Indentation.INDENT_8],
+        S.Indentation,
+        indentationChangeHandler
+    );
+        
+    const alignmentCheckBox = createCheckBox(
+        
+        C.Label.DIALOG_SETTINGS_IMAGE_IMPORTS_ALIGNMENT,
+        C.Label.DIALOG_SETTINGS_IMAGE_IMPORTS_ALIGNMENT_TOOLTIP,
+        S.Alignment,
+        alignmentChangeHandler
+    );
     
-    const descriptionCheckBox = createCheckBox(C.Label.DIALOG_SETTINGS_AUTO_CODE_DESCRIPTION,
-                                               C.Label.DIALOG_SETTINGS_AUTO_CODE_DESCRIPTION_TOOLTIP,
-                                               S.Description,
-                                               descriptionChangeHandler);
+    const descriptionCheckBox = createCheckBox(
+        
+        C.Label.DIALOG_SETTINGS_IMAGE_IMPORTS_DESCRIPTION,
+        C.Label.DIALOG_SETTINGS_IMAGE_IMPORTS_DESCRIPTION_TOOLTIP,
+        S.Description,
+        descriptionChangeHandler
+    );
 
-    const appearanceFieldSet = createFieldSet(C.Label.DIALOG_SETTINGS_APPEARANCE, createContainer(themeDropdownMenu));
-    const codeFieldSet = createFieldSet(C.Label.DIALOG_SETTINGS_CODE, createContainer(indentationDropdownMenu, alignmentCheckBox, descriptionCheckBox));
-    const settingsFieldSet = createFieldSet(null, appearanceFieldSet, codeFieldSet);
+    const appearanceFieldSet = createFieldSet(
+        
+        C.Label.DIALOG_SETTINGS_APPEARANCE,
+        createContainer(themeDropdownMenu)
+    );
 
-    const content = createContent(C.CSSClass.DIALOG_CONTENT_SETTINGS, image, settingsFieldSet);
+    const codeEditorFieldSet = createFieldSet(
+        
+        C.Label.DIALOG_SETTINGS_CODE_EDITOR,
+        createContainer(autoExecuteCheckBox, indentationDropdownMenu)
+    );
+
+    const imageImportsFieldSet = createFieldSet(
+
+        C.Label.DIALOG_SETTINGS_IMAGE_IMPORTS,
+        createContainer(alignmentCheckBox, descriptionCheckBox)
+    );
+
+    const settingsFieldSet = createFieldSet(
+        
+        null,
+        appearanceFieldSet,
+        codeEditorFieldSet,
+        imageImportsFieldSet
+    );
+
+    const content = createContent(
+        
+        C.CSSClass.DIALOG_CONTENT_SETTINGS,
+        image,
+        settingsFieldSet
+    );
 
     M.SettingsDialog = new Dialog(content, Dialog.Type.ALERT);
     M.SettingsDialog.display();
@@ -374,7 +426,7 @@ function createContainer(...children) {
 }
 
 /**
- * @description Event handler called when the "Theme" dropdown menu value has changed.
+ * @description Event handler called when the C.Label.DIALOG_SETTINGS_THEME dropdown menu value has changed.
  * @param {Object} event - The event object.
  * @private
  * @function
@@ -387,7 +439,25 @@ function themeChangeHandler(event) {
 }
 
 /**
- * @description Event handler called when the "Indentation" dropdown menu value has changed.
+ * @description Event handler called when the C.Label.DIALOG_SETTINGS_AUTO_EXECUTION checkbox value has changed.
+ * @param {Object} event - The event object.
+ * @private
+ * @function
+ * 
+ */
+function autoExecuteChangeHandler(event) {
+
+    S.AutoExecute = event.target.checked;
+    Controls.updateExecuteButton();
+    
+    if (S.AutoExecute) {
+        
+        App.executeCode();
+    }
+}
+
+/**
+ * @description Event handler called when the C.Label.DIALOG_SETTINGS_DEFAULT_INDENTATION dropdown menu value has changed.
  * @param {Object} event - The event object.
  * @private
  * @function
@@ -400,7 +470,7 @@ function indentationChangeHandler(event) {
 }
 
 /**
- * @description Event handler called when the "Alignment" checkbox value has changed.
+ * @description Event handler called when the C.Label.DIALOG_SETTINGS_IMAGE_IMPORTS_ALIGNMENT checkbox value has changed.
  * @param {Object} event - The event object.
  * @private
  * @function
@@ -413,7 +483,7 @@ function alignmentChangeHandler(event) {
 }
 
 /**
- * @description Event handler called when the "Description" checkbox value has changed.
+ * @description Event handler called when the C.Label.DIALOG_SETTINGS_IMAGE_IMPORTS_DESCRIPTION checkbox value has changed.
  * @param {Object} event - The event object.
  * @private
  * @function

@@ -27,7 +27,7 @@ body {
             flex-direction: row;
             margin-right: -($SHARED_CONTROL_BUTTON_PADDING + $SHARED_CONTROL_BUTTON_PADDING);
 
-            #error, input {
+            input {
 
                 &:not(:first-child) {
 
