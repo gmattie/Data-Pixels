@@ -2,13 +2,15 @@
 import { SharedStates as S } from "./support/sharedStates.js";
 import * as App from "./application/app.js";
 import * as C from "./support/constants.js";
+import * as C_IPC from "../../build/js/support/constants.js";
 import * as File from "./application/file.js";
 import * as Content from "./application/content.js";
 
 /**
- * @description The <strong>main.js</strong> module is the entry point for the application and contains the interface functionality for Electron.
+ * @description The <strong>index.js</strong> module is the entry point for the application and contains Inter-Process Communication (IPC) logic for Electron.
  * @requires app
  * @requires constants
+ * @requires constantsIPC
  * @requires file
  * @requires content
  * @requires sharedStates
@@ -58,14 +60,14 @@ App.init();
  * @constant
  * 
  */
-const isElectronEnvironment = (typeof window.require === C.Type.FUNCTION && window.require(C.Electron.ELECTRON));
+const isElectronEnvironment = (typeof window.require === C.Type.FUNCTION && window.require(C_IPC.Electron.ELECTRON));
 
 if (isElectronEnvironment) {
 
-    M.Electron = window.require(C.Electron.ELECTRON);
+    M.Electron = window.require(C_IPC.Electron.ELECTRON);
     M.IPCRenderer = M.Electron.ipcRenderer;
-    M.NodeFileSystem = window.require(C.Electron.NODE_FILE_SYSTEM);
-    M.NodePath = window.require(C.Electron.NODE_PATH);
+    M.NodeFileSystem = window.require(C_IPC.Electron.NODE_FILE_SYSTEM);
+    M.NodePath = window.require(C_IPC.Electron.NODE_PATH);
     M.RemoteDialog = M.Electron.remote.dialog;
 
     initElectronInterface();
@@ -81,18 +83,18 @@ function initElectronInterface() {
     
     if (isElectronEnvironment) {
 
-        M.IPCRenderer.on(C.Event.ELECTRON_REQUEST_EXECUTE_BUTTON, updateElectronRunMenuItem);
-        M.IPCRenderer.on(C.Event.ELECTRON_REQUEST_ORIENTATION, updateElectronOrientationMenuItems);
-        M.IPCRenderer.on(C.Event.ELECTRON_REQUEST_FRAME_VIEW_HAS_IMAGE, updateElectronFrameViewMenuItems);
+        M.IPCRenderer.on(C_IPC.Event.REQUEST_EXECUTE_BUTTON, updateElectronRunMenuItem);
+        M.IPCRenderer.on(C_IPC.Event.REQUEST_ORIENTATION, updateElectronOrientationMenuItems);
+        M.IPCRenderer.on(C_IPC.Event.REQUEST_FRAME_VIEW_HAS_IMAGE, updateElectronFrameViewMenuItems);
         
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_IMPORT_IMAGE_FILE, () => {
+        M.IPCRenderer.on(C_IPC.Event.MENU_IMPORT_IMAGE_FILE, () => {
 
             M.RemoteDialog.showOpenDialog({
 
-                title: C.Label.ELECTRON_DIALOG_IMPORT_TITLE,
-                buttonLabel: C.Label.ELECTRON_DIALOG_IMPORT,
-                properties: [C.Electron.DIALOG_OPEN_FILE],
-                filters: [{name: C.Label.ELECTRON_DIALOG_IMPORT_TYPE, extensions: [C.Type.IMAGE_JPG, C.Type.IMAGE_PNG, C.Type.IMAGE_GIF]}]
+                title: C_IPC.Label.DIALOG_IMPORT_TITLE,
+                buttonLabel: C_IPC.Label.DIALOG_IMPORT,
+                properties: [C_IPC.Electron.DIALOG_OPEN_FILE],
+                filters: [{name: C_IPC.Label.DIALOG_IMPORT_TYPE, extensions: [C.Type.IMAGE_JPG, C.Type.IMAGE_PNG, C.Type.IMAGE_GIF]}]
             },
             (fileInfo) => {
 
@@ -113,60 +115,31 @@ function initElectronInterface() {
             });
         });
         
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXPORT_DATA_PIXELS_FILE, App.loadDataPixelsClassCode);
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXECUTE, App.executeCode);
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_SETTINGS, App.displaySettingsDialog);
+        M.IPCRenderer.on(C_IPC.Event.MENU_EXPORT_DATA_PIXELS_FILE, App.loadDataPixelsClassCode);
+        M.IPCRenderer.on(C_IPC.Event.MENU_RUN, App.executeCode);
+        M.IPCRenderer.on(C_IPC.Event.MENU_SETTINGS, App.displaySettingsDialog);
         
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_LAYOUT_HORIZONTAL, () => {
+        M.IPCRenderer.on(C_IPC.Event.MENU_LAYOUT_HORIZONTAL, () => {
 
-            S.Orientation = C.Orientation.HORIZONTAL;
+            S.Orientation = C_IPC.Orientation.HORIZONTAL;
             App.toggleLayout();
         });
 
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_LAYOUT_VERTICAL, () => {
+        M.IPCRenderer.on(C_IPC.Event.MENU_LAYOUT_VERTICAL, () => {
 
-            S.Orientation = C.Orientation.VERTICAL;
+            S.Orientation = C_IPC.Orientation.VERTICAL;
             App.toggleLayout();
         });
 
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_RESET, Content.resetImageTransform);
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_SCALE_UP, () => {
-
-            Content.updateImageTransform(null, null, true);
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_SCALE_DOWN, () => {
-
-            Content.updateImageTransform(null, null, false);
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_REFLECT_HORIZONTAL, () => {
-
-            Content.updateImageTransform(null, null, null, true);
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_REFLECT_VERTICAL, () => {
-
-            Content.updateImageTransform(null, null, null, null, true);
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_ABOUT, App.displayAboutDialog);
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXAMPLE_BASIC, () => {
-
-            App.writeExampleCode(C.Example.BASIC);
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXAMPLE_HEARTS, () => {
-
-            App.writeExampleCode(C.Example.HEARTS);
-        });
-
-        M.IPCRenderer.on(C.Event.ELECTRON_MENU_EXAMPLE_MARIO_BROS, () => {
-
-            App.writeExampleCode(C.Example.MARIO_BROS);
-        });
+        M.IPCRenderer.on(C_IPC.Event.MENU_RESET, Content.resetImageTransform);
+        M.IPCRenderer.on(C_IPC.Event.MENU_SCALE_UP, () => Content.updateImageTransform(null, null, true));
+        M.IPCRenderer.on(C_IPC.Event.MENU_SCALE_DOWN, () => Content.updateImageTransform(null, null, false));
+        M.IPCRenderer.on(C_IPC.Event.MENU_REFLECT_HORIZONTAL, () => Content.updateImageTransform(null, null, null, true));
+        M.IPCRenderer.on(C_IPC.Event.MENU_REFLECT_VERTICAL, () => Content.updateImageTransform(null, null, null, null, true));
+        M.IPCRenderer.on(C_IPC.Event.MENU_ABOUT, App.displayAboutDialog);
+        M.IPCRenderer.on(C_IPC.Event.MENU_EXAMPLE_BASIC, () => App.writeExampleCode(C.Example.BASIC));
+        M.IPCRenderer.on(C_IPC.Event.MENU_EXAMPLE_HEARTS, () => App.writeExampleCode(C.Example.HEARTS));
+        M.IPCRenderer.on(C_IPC.Event.MENU_EXAMPLE_MARIO_BROS, () => App.writeExampleCode(C.Example.MARIO_BROS));
     }
 }
 
@@ -181,9 +154,9 @@ function exportClassFile(dataPixelsClassCode) {
 
     M.RemoteDialog.showSaveDialog({
 
-        title: C.Label.ELECTRON_DIALOG_EXPORT_TITLE,
-        defaultPath: C.Code.ELECTRON_DIALOG_EXPORT_PATH,
-        filters: [{name: C.Label.ELECTRON_DIALOG_EXPORT_TYPE, extensions: [C.Code.EXTENSION_JAVASCRIPT]}]
+        title: C_IPC.Label.DIALOG_EXPORT_TITLE,
+        defaultPath: C_IPC.Label.DIALOG_EXPORT_PATH,
+        filters: [{name: C_IPC.Label.DIALOG_EXPORT_TYPE, extensions: [C_IPC.Label.DIALOG_EXPORT_EXTENSION]}]
     },
     (fileName) => {
 
@@ -209,7 +182,7 @@ function updateElectronRunMenuItem() {
 
     if (isElectronEnvironment) {
 
-        M.IPCRenderer.send(C.Event.ELECTRON_UPDATE_EXECUTE_BUTTON, C.HTMLElement.BUTTON_EXECUTE.disabled);
+        M.IPCRenderer.send(C_IPC.Event.UPDATE_EXECUTE_BUTTON, C.HTMLElement.BUTTON_EXECUTE.disabled);
     }
 } 
 
@@ -223,7 +196,7 @@ function updateElectronOrientationMenuItems() {
 
     if (isElectronEnvironment) {
 
-        M.IPCRenderer.send(C.Event.ELECTRON_UPDATE_ORIENTATION, S.Orientation);
+        M.IPCRenderer.send(C_IPC.Event.UPDATE_ORIENTATION, S.Orientation);
     }
 }
 
@@ -237,6 +210,6 @@ function updateElectronFrameViewMenuItems() {
 
     if (isElectronEnvironment) {
 
-        M.IPCRenderer.send(C.Event.ELECTRON_UPDATE_FRAME_VIEW_HAS_IMAGE, S.FrameViewHasImage);
+        M.IPCRenderer.send(C_IPC.Event.UPDATE_FRAME_VIEW_HAS_IMAGE, S.FrameViewHasImage);
     }
 }

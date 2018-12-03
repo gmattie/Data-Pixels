@@ -2,6 +2,7 @@
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as App from "./app.js";
 import * as C from "../support/constants.js";
+import * as C_IPC from "../../../build/js/support/constants.js";
 import * as Controls from "./controls.js";
 import * as Layout from "./layout.js";
 
@@ -9,6 +10,7 @@ import * as Layout from "./layout.js";
  * @description The <strong>content.js</strong> module contains properties and functions pertaining to the Code Editor, Frame View and the Drag Bar.
  * @requires app
  * @requires constants
+ * @requires constantsIPC
  * @requires layout
  * @requires sharedStates
  * @module
@@ -31,7 +33,15 @@ export {
  *     <li> LinesTotal </li>
  *     <li> Image </li>
  *     <li> IsCodeExecutable </li>
- *     <li> Transform </li>
+ *     <li> Transform 
+ *         <ul>
+ *             <li> X </li>
+ *             <li> Y </li>
+ *             <li> Scale </li>
+ *             <li> ReflectH </li>
+ *             <li> ReflectV </li>
+ *         </ul>
+ *     </li>
  * </ul>
  * 
  * @private
@@ -48,11 +58,11 @@ const M = {
 
     Transform: {
 
-        x: 0,
-        y: 0,
-        scale: 1.00,
-        reflectH: false,
-        reflectV: false
+        X: 0,
+        Y: 0,
+        Scale: 1.00,
+        ReflectH: false,
+        ReflectV: false
     }
 };
 
@@ -183,8 +193,15 @@ function initCodeEditor() {
 
     M.IsCodeExecutable = Boolean(S.Code);
 
+    const isAutoMode = (S.CodeEditorMode === C.Mode.AUTO);
+
     textArea.textContent = S.Code;
     textArea.dispatchEvent(new Event(C.Event.INPUT));
+
+    if (isAutoMode) {
+
+        App.setCodeEditorMode(C.Mode.AUTO);
+    }
 }
 
 /**
@@ -258,7 +275,7 @@ function dragBarMouseMoveHandler(event) {
     const frameView = C.HTMLElement.FRAME_VIEW;
     const contentMinSize = C.Measurement.CONTENT_MIN_SIZE;
 
-    if (S.Orientation === C.Orientation.HORIZONTAL) {
+    if (S.Orientation === C_IPC.Orientation.HORIZONTAL) {
 
         const offset = event.clientY - M.DragPointOrigin.y;
 
@@ -274,7 +291,7 @@ function dragBarMouseMoveHandler(event) {
         return;
     }
 
-    if (S.Orientation === C.Orientation.VERTICAL) {
+    if (S.Orientation === C_IPC.Orientation.VERTICAL) {
 
         const offset = event.clientX - M.DragPointOrigin.x;
 
@@ -384,8 +401,8 @@ function frameViewMouseHandler(event) {
             
         case C.Event.MOUSE_MOVE: {
 
-			const x = M.Transform.x + event.movementX;
-            const y = M.Transform.y + event.movementY;
+			const x = M.Transform.X + event.movementX;
+            const y = M.Transform.Y + event.movementY;
             
             updateImageTransform(x, y);
 
@@ -427,29 +444,29 @@ function frameViewMouseHandler(event) {
  */
 function updateImageTransform(x = null, y = null, scale = null, reflectH = null, reflectV = null) {
 
-	M.Transform.x = (x === null) ? M.Transform.x : x;
-	M.Transform.y = (y === null) ? M.Transform.y : y;
+	M.Transform.X = (x === null) ? M.Transform.X : x;
+	M.Transform.Y = (y === null) ? M.Transform.Y : y;
 
-    M.Transform.scale = (scale === null) ? M.Transform.scale : (() => {
+    M.Transform.Scale = (scale === null) ? M.Transform.Scale : (() => {
 
         if (typeof scale === C.Type.BOOLEAN) {
         
             const step = (scale) ? C.Measurement.SCALE_STEP : -(C.Measurement.SCALE_STEP);
 
-            return Math.max(0.01, M.Transform.scale + step);
+            return Math.max(0.01, M.Transform.Scale + step);
         }
         
         return scale;
     })();
 
-    M.Transform.reflectH = (reflectH === null) ? M.Transform.reflectH : (reflectH) ? !M.Transform.reflectH : false;
-    M.Transform.reflectV = (reflectV === null) ? M.Transform.reflectV : (reflectV) ? !M.Transform.reflectV : false;
+    M.Transform.ReflectH = (reflectH === null) ? M.Transform.ReflectH : (reflectH) ? !M.Transform.ReflectH : false;
+    M.Transform.ReflectV = (reflectV === null) ? M.Transform.ReflectV : (reflectV) ? !M.Transform.ReflectV : false;
 
 	M.Image.style.transform = `
     
-    	${C.CSS.TRANSLATE}(${M.Transform.x}${C.CSS.PX}, ${M.Transform.y}${C.CSS.PX})
-        ${C.CSS.SCALE_Y}(${(M.Transform.reflectH) ? "-" : "+"}${M.Transform.scale})
-        ${C.CSS.SCALE_X}(${(M.Transform.reflectV) ? "-" : "+"}${M.Transform.scale})
+    	${C.CSS.TRANSLATE}(${M.Transform.X}${C.CSS.PX}, ${M.Transform.Y}${C.CSS.PX})
+        ${C.CSS.SCALE_Y}(${(M.Transform.ReflectH) ? "-" : "+"}${M.Transform.Scale})
+        ${C.CSS.SCALE_X}(${(M.Transform.ReflectV) ? "-" : "+"}${M.Transform.Scale})
     `;
 
     updateImageInfo();
@@ -474,7 +491,7 @@ function resetImageTransform() {
  */
 function updateImageInfo() {
 
-    C.HTMLElement.FRAME_VIEW_INFO_SCALE.textContent = M.Transform.scale.toFixed(2);
-    C.HTMLElement.FRAME_VIEW_INFO_WIDTH.textContent = Math.round(M.Image.offsetWidth * M.Transform.scale);
-    C.HTMLElement.FRAME_VIEW_INFO_HEIGHT.textContent = Math.round(M.Image.offsetHeight * M.Transform.scale);
+    C.HTMLElement.FRAME_VIEW_INFO_SCALE.textContent = M.Transform.Scale.toFixed(2);
+    C.HTMLElement.FRAME_VIEW_INFO_WIDTH.textContent = Math.round(M.Image.offsetWidth * M.Transform.Scale);
+    C.HTMLElement.FRAME_VIEW_INFO_HEIGHT.textContent = Math.round(M.Image.offsetHeight * M.Transform.Scale);
 }

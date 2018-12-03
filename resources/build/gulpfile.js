@@ -1,8 +1,14 @@
-//Dependencies
+/**
+ * Dependencies
+ * 
+ */
 const exec = require("child_process").exec;
 const gulp = require("gulp");
 
-//Constants
+/**
+ * Constants
+ * 
+ */
 const C = {
 
     AUTHOR: "Geoffrey Mattie",
@@ -10,14 +16,20 @@ const C = {
     WINDOWS_METADATA: "win32metadata"
 };
 
-//Paths
+/**
+ * Paths
+ * 
+ */
 const Path = {
 
     ICON: "../source/images/icons/",
     OUT: "./releases/"
 };
 
-//Commands
+/**
+ * Commands
+ * 
+ */
 const Command = {
 
     APP_BUNDLE_ID: `--app-bundle-id=com.mattie.DataPixelsPlayground`,
@@ -25,7 +37,7 @@ const Command = {
     ASAR: `--asar`,
     BASE: `electron-packager ./ --overwrite`,
     COMPANY_NAME: `--${C.WINDOWS_METADATA}.CompanyName="${C.AUTHOR}"`,
-    COPYRIGHT: `--app-copyright="Copyright © 2017 ${C.AUTHOR}"`,
+    COPYRIGHT: `--app-copyright="Copyright © ${C.AUTHOR}"`,
     FILE_DESCRIPTION: `--${C.WINDOWS_METADATA}.FileDescription="${C.TITLE}"`,
     ICON: `--icon=`,
     ORIGINAL_FILE_NAME: `--${C.WINDOWS_METADATA}.OriginalFilename="${C.TITLE}"`,
@@ -34,7 +46,10 @@ const Command = {
     PRODUCT_NAME: `--${C.WINDOWS_METADATA}.ProductName="${C.TITLE}"`
 };
 
-//Platforms
+/**
+ * Platforms
+ * 
+ */
 const Platform = {
 
     LINUX: "linux",
@@ -42,7 +57,10 @@ const Platform = {
     WINDOWS: "win32"
 };
 
-//Icons
+/**
+ * Icons
+ * 
+ */
 const Icon = {
 
     ALL: `${Command.ICON}${Path.ICON}icon.*`,
@@ -51,51 +69,62 @@ const Icon = {
     WINDOWS: `${Command.ICON}${Path.ICON}icon.ico`    
 };
 
-//Tasks
+/**
+ * Tasks
+ * 
+ */
 const tasks = {
 
-    PACKAGE: "package",
     PACKAGE_LINUX: "package-linux",
     PACKAGE_MAC: "package-mac",
     PACKAGE_WINDOWS: "package-windows"
 };
 
-//Task Package
-gulp.task(tasks.PACKAGE, () => {
-
-    const metadata = `${Command.APP_BUNDLE_ID} ${Command.PRODUCT_NAME} ${Command.COMPANY_NAME} ${Command.FILE_DESCRIPTION} ${Command.ORIGINAL_FILE_NAME}`;
-    const command = `${Command.PLATFORM}${Platform.LINUX},${Platform.MAC},${Platform.WINDOWS} ${metadata} ${Icon.ALL}`;
-
-    executePackager(command);
-});
-
-//Task Package Linux
-gulp.task(tasks.PACKAGE_LINUX, () => {
+/**
+ * Task Package Linux
+ * 
+ */
+gulp.task(tasks.PACKAGE_LINUX, (done) => {
     
     const command = `${Command.PLATFORM}${Platform.LINUX} ${Icon.LINUX}`;
 
     executePackager(command);
+
+    done();
 });
 
-//Task Package Mac
-gulp.task(tasks.PACKAGE_MAC, () => {
+/**
+ * Task Package Mac
+ * 
+ */
+gulp.task(tasks.PACKAGE_MAC, (done) => {
 
     const metadata = `${Command.APP_BUNDLE_ID}`;
     const command = `${Command.PLATFORM}${Platform.MAC} ${metadata} ${Icon.MAC}`;
 
     executePackager(command);
+
+    done();
 });
 
-//Task Package Windows
-gulp.task(tasks.PACKAGE_WINDOWS, () => {
+/**
+ * Task Package Windows
+ * 
+ */
+gulp.task(tasks.PACKAGE_WINDOWS, (done) => {
 
     const metadata = `${Command.PRODUCT_NAME} ${Command.COMPANY_NAME} ${Command.FILE_DESCRIPTION} ${Command.ORIGINAL_FILE_NAME}`;
     const command = `${Command.PLATFORM}${Platform.WINDOWS} ${metadata} ${Icon.WINDOWS}`;
 
     executePackager(command);
+
+    done();
 });
 
-//Execute Packager
+/**
+ * Execute Packager
+ * 
+ */
 function executePackager(platformCommand) {
 
     const baseCommand = `${Command.BASE} ${Command.ASAR} ${Command.ARCH} ${Command.COPYRIGHT} ${Command.OUT}`;

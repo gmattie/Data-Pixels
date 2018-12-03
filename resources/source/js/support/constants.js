@@ -9,7 +9,6 @@ export {
     CSS,
     CSSClass,
     Dialog,
-    Electron,
     Event,
     Example,
     HTML,
@@ -19,7 +18,6 @@ export {
     Label,
     Measurement,
     Mode,
-    Orientation,
     Persistence,
     TextArea,
     Theme,
@@ -35,8 +33,6 @@ export {
  *     <li> BODY_APPEND </li>
  *     <li> CLASS_NAME </li>
  *     <li> CONSTANT </li>
- *     <li> ELECTRON_DIALOG_EXPORT_PATH </li>
- *     <li> EXTENSION_JAVASCRIPT </li>
  *     <li> G </li>
  *     <li> IMPORT_FROM </li>
  *     <li> PIXEL_SIZE </li>
@@ -55,8 +51,6 @@ const Code = {
     BODY_APPEND: "document.body.appendChild",
     CLASS_NAME: "DataPixels",
     CONSTANT: "const",
-    ELECTRON_DIALOG_EXPORT_PATH: "~/DataPixels.js",
-    EXTENSION_JAVASCRIPT: ".js",
     GREEN: "G:",
     IMPORT_FROM: "from \"./DataPixels.js\";",
     PIXEL_SIZE: "pixelSize",
@@ -204,28 +198,6 @@ Object.freeze(Dialog);
 /**
  * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
- *     <li> DIALOG_OPEN_FILE </li>
- *     <li> ELECTRON </li>
- *     <li> NODE_FILE_SYSTEM </li>
- *     <li> NODE_PATH </li>
- * </ul>
- * 
- * @constant
- * 
- */
-const Electron = {
-
-    DIALOG_OPEN_FILE: "openFile",
-    ELECTRON: "electron",
-    NODE_FILE_SYSTEM: "fs",
-    NODE_PATH: "path"
-};
-
-Object.freeze(Electron);
-
-/**
- * @description Properties of type <strong>{string}</strong> consist of:
- * <ul>
  *     <li> BEFORE_UNLOAD </li>
  *     <li> CHANGE </li>
  *     <li> CLICK </li>
@@ -233,27 +205,6 @@ Object.freeze(Electron);
  *     <li> DRAG_OVER </li>
  *     <li> DRAG_START </li>
  *     <li> DROP </li>
- *     <li> ELECTRON_MENU_ABOUT </li>
- *     <li> ELECTRON_MENU_EXAMPLE_BASIC </li>
- *     <li> ELECTRON_MENU_EXAMPLE_HEARTS </li>
- *     <li> ELECTRON_MENU_EXAMPLE_MARIO_BROS </li>
- *     <li> ELECTRON_MENU_EXECUTE </li>
- *     <li> ELECTRON_MENU_EXPORT_DATA_PIXELS_FILE </li>
- *     <li> ELECTRON_MENU_REFLECT_HORIZONTAL </li>
- *     <li> ELECTRON_MENU_REFLECT_VERTICAL </li>
- *     <li> ELECTRON_MENU_IMPORT_IMAGE_FILE </li>
- *     <li> ELECTRON_MENU_LAYOUT_HORIZONTAL </li>
- *     <li> ELECTRON_MENU_LAYOUT_VERTICAL </li>
- *     <li> ELECTRON_MENU_RESET </li>
- *     <li> ELECTRON_MENU_SCALE_DOWN </li>
- *     <li> ELECTRON_MENU_SCALE_UP </li>
- *     <li> ELECTRON_MENU_SETTINGS </li>
- *     <li> ELECTRON_REQUEST_EXECUTE_BUTTON </li>
- *     <li> ELECTRON_REQUEST_FRAME_VIEW_HAS_IMAGE </li>
- *     <li> ELECTRON_REQUEST_ORIENTATION </li>
- *     <li> ELECTRON_UPDATE_EXECUTE_BUTTON </li>
- *     <li> ELECTRON_UPDATE_FRAME_VIEW_HAS_IMAGE </li>
- *     <li> ELECTRON_UPDATE_ORIENTATION </li>
  *     <li> ERROR </li>
  *     <li> INPUT </li>
  *     <li> KEY_DOWN </li>
@@ -278,27 +229,6 @@ const Event = {
     DRAG_OVER: "dragover",
     DRAG_START: "dragstart",
     DROP: "drop",
-    ELECTRON_MENU_ABOUT: "menuAbout",
-    ELECTRON_MENU_EXAMPLE_BASIC: "menuExampleBasic",
-    ELECTRON_MENU_EXAMPLE_HEARTS: "menuExampleHearts",
-    ELECTRON_MENU_EXAMPLE_MARIO_BROS: "menuExampleMarioBros",
-    ELECTRON_MENU_EXECUTE: "menuExecute",
-    ELECTRON_MENU_EXPORT_DATA_PIXELS_FILE: "menuExportDataPixelsFile",
-    ELECTRON_MENU_REFLECT_HORIZONTAL: "menuReflectHorizontal",
-    ELECTRON_MENU_REFLECT_VERTICAL: "menuReflectVertical",
-    ELECTRON_MENU_IMPORT_IMAGE_FILE: "menuImportImageFile",
-    ELECTRON_MENU_LAYOUT_HORIZONTAL: "menuLayoutHorizontal",
-    ELECTRON_MENU_LAYOUT_VERTICAL: "menuLayoutVertical",
-    ELECTRON_MENU_RESET: "menuReset",
-    ELECTRON_MENU_SCALE_DOWN: "menuScaleDown",
-    ELECTRON_MENU_SCALE_UP: "menuScaleUp",
-    ELECTRON_MENU_SETTINGS: "menuSettings",
-    ELECTRON_REQUEST_EXECUTE_BUTTON: "requestExecuteButton",
-    ELECTRON_REQUEST_FRAME_VIEW_HAS_IMAGE: "requestFrameViewHasImage",
-    ELECTRON_REQUEST_ORIENTATION: "requestOrientation",
-    ELECTRON_UPDATE_EXECUTE_BUTTON: "updateExecuteButton",
-    ELECTRON_UPDATE_FRAME_VIEW_HAS_IMAGE: "updateFrameViewHasImage",
-    ELECTRON_UPDATE_ORIENTATION: "updateOrientation",
     ERROR: "error",
     INPUT: "input",
     KEY_DOWN: "keydown",
@@ -308,7 +238,7 @@ const Event = {
     MOUSE_MOVE: "mousemove",
     MOUSE_UP: "mouseup",
     MOUSE_WHEEL: "wheel",
-    SCROLL: "scroll"    
+    SCROLL: "scroll"
 };
 
 Object.freeze(Event);
@@ -444,7 +374,7 @@ const HTMLElement = {
 Object.freeze(HTMLElement);
 
 /**
- * @description Properties of type <strong>{Object}</strong> consist of:
+ * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
  *     <li> ALERT </li>
  *     <li> APPLICATION </li>
@@ -478,7 +408,7 @@ const ImageSource = {
 Object.freeze(ImageSource);
 
 /**
- * @description Properties of type <strong>{Object}</strong> consist of:
+ * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
  *     <li> INDENT_2 </li>
  *     <li> INDENT_4 </li>
@@ -501,15 +431,6 @@ Object.freeze(Indentation);
  * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
  *     <li> CANCEL </li>
- *     <li> CONTROLS_EXECUTE </li>
- *     <li> CONTROLS_LAYOUT_HORIZONTAL </li>
- *     <li> CONTROLS_LAYOUT_VERTICAL </li>
- *     <li> CONTROLS_REFLECT_HORIZONTALLY </li>
- *     <li> CONTROLS_REFLECT_VERTICALLY </li>
- *     <li> CONTROLS_RESET </li>
- *     <li> CONTROLS_SCALE_DOWN </li>
- *     <li> CONTROLS_SCALE_UP </li>
- *     <li> CONTROLS_SETTINGS </li>
  *     <li> DIALOG_ABOUT_URL </li>
  *     <li> DIALOG_ABOUT </li>
  *     <li> DIALOG_FILE_TYPE </li>
@@ -527,11 +448,6 @@ Object.freeze(Indentation);
  *     <li> DIALOG_SETTINGS_IMAGE_IMPORTS </li>
  *     <li> DIALOG_SETTINGS_THEME_TOOLTIP </li>
  *     <li> DIALOG_SETTINGS_THEME </li>
- *     <li> ELECTRON_DIALOG_EXPORT_TITLE </li>
- *     <li> ELECTRON_DIALOG_EXPORT_TYPE </li>
- *     <li> ELECTRON_DIALOG_IMPORT_TITLE </li>
- *     <li> ELECTRON_DIALOG_IMPORT_TYPE </li>
- *     <li> ELECTRON_DIALOG_IMPORT </li>
  *     <li> ERROR </li>
  *     <li> FILE_CORRUPT </li>
  *     <li> FILE_NOT_FOUND </li>
@@ -548,17 +464,8 @@ Object.freeze(Indentation);
 const Label = {
     
     CANCEL: "Cancel",
-    CONTROLS_EXECUTE: "Execute code",
-    CONTROLS_LAYOUT_HORIZONTAL: "Layout Horizontal",
-    CONTROLS_LAYOUT_VERTICAL: "Layout Vertical",
-    CONTROLS_REFLECT_HORIZONTALLY: "Reflect Horizontally",
-    CONTROLS_REFLECT_VERTICALLY: "Reflect Vertically",
-    CONTROLS_RESET: "Reset",
-    CONTROLS_SCALE_DOWN: "Scale Down",
-    CONTROLS_SCALE_UP: "Scale Up",
-    CONTROLS_SETTINGS: "Settings",
     DIALOG_ABOUT_URL: "https://github.com/gmattie/Data-Pixels",
-    DIALOG_ABOUT: `Data Pixels Playground\n\nCopyright © 2017-${new Date().getFullYear()} Geoffrey Mattie\n`,
+    DIALOG_ABOUT: `Data Pixels Playground\n\nVersion: ${ require("../../../../package.json").version }\nCopyright © 2017-${ new Date().getFullYear() } Geoffrey Mattie\n`,
     DIALOG_FILE_TYPE: "Illegal file type.  This application only supports raster based image files with the following type extensions:\n\nPNG, JPG, GIF.",
     DIALOG_LARGE_IMAGE: "This application is designed to process small, icon-sized image files.  Importing larger image files may result in decreased performance.\n\nDo you wish to proceed?",
     DIALOG_SETTINGS_APPEARANCE: "APPEARANCE",
@@ -574,11 +481,6 @@ const Label = {
     DIALOG_SETTINGS_IMAGE_IMPORTS: "IMAGE IMPORTS",
     DIALOG_SETTINGS_THEME_TOOLTIP: "Updates the visual appearance of the application.",
     DIALOG_SETTINGS_THEME: "Theme:",
-    ELECTRON_DIALOG_EXPORT_TITLE: "Save DataPixels.js File",
-    ELECTRON_DIALOG_EXPORT_TYPE: "JavaScript",
-    ELECTRON_DIALOG_IMPORT_TITLE: "Select Image File",
-    ELECTRON_DIALOG_IMPORT_TYPE: "Images",
-    ELECTRON_DIALOG_IMPORT: "Import",
     ERROR: "ERROR:",
     FILE_CORRUPT: "Image file is corrupt.",
     FILE_NOT_FOUND: "DataPixels.js file not found.",
@@ -596,6 +498,8 @@ Object.freeze(Label);
  * <ul>
  *     <li> AUTO_EXECUTE_TIMEOUT </li>
  *     <li> CONTENT_MIN_SIZE </li>
+ *     <li> DEFAULT_CODE_EDITOR_PERCENT </li>
+ *     <li> DEFAULT_FRAME_VIEW_PERCENT </li>
  *     <li> FRAME_VIEW_MARGIN </li>
  *     <li> IMAGE_MAX_AREA </li>
  *     <li> SCALE_STEP </li>
@@ -609,6 +513,8 @@ const Measurement = {
 
     AUTO_EXECUTE_TIMEOUT: 500,
     CONTENT_MIN_SIZE: 160,
+    DEFAULT_CODE_EDITOR_PERCENT: 0.65,
+    DEFAULT_FRAME_VIEW_PERCENT: 0.35,
     FRAME_VIEW_MARGIN: 0.85,
     IMAGE_MAX_AREA: 10000,
     SCALE_STEP: 0.01,
@@ -629,29 +535,11 @@ Object.freeze(Measurement);
  */
 const Mode = {
 
-    AUTO: 0,
-    MANUAL: 1
+    AUTO: "A",
+    MANUAL: "M"
 };
 
 Object.freeze(Mode);
-
-/**
- * @description Properties of type <strong>{number}</strong> consist of:
- * <ul>
- *     <li> HORIZONTAL </li>
- *     <li> VERTICAL </li>
- * </ul>
- * 
- * @constant
- * 
- */
-const Orientation = {
-
-    HORIZONTAL: "horizontal",
-    VERTICAL: "vertical"
-};
-
-Object.freeze(Orientation);
 
 /**
  * @description Properties of type <strong>{string}</strong> consist of:
@@ -716,7 +604,7 @@ const TextArea = {
 Object.freeze(TextArea);
 
 /**
- * @description Properties of type <strong>{number}</strong> consist of:
+ * @description Properties of type <strong>{string}</strong> consist of:
  * <ul>
  *     <li> DARK </li>
  *     <li> LIGHT </li>

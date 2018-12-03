@@ -41,14 +41,14 @@ For more information see the [**Example Code**](https://github.com/gmattie/Data-
 
 Data Pixels Playground is a lightweight, cross-platform, desktop application for **Windows**, **Mac** and **Linux**, which may be used to write and execute DataPixels.js instances for previewing and testing purposes.
 
-The application features **built-in example code** via the *Help* menu as well as the ability to **parse pixel data from image files** to produce automatically generated code through the *File > Open Image File…* menu item or through drag-and-drop gestures.
+The application features **built-in example code** via the *Help* menu as well as the ability to **parse pixel data from image files** to produce automatically generated code through the *File > Open Image File…* menu item or through drag-and-drop gestures.  Additionally, compiled Data Pixels visible in the *View Panel* can be **easily dragged, scaled and reflected** using the mouse or in-app controls to help you design the perfect images for your requirements.
 
 Note: pixel color values that are automatically interpreted from image files with an embedded color space may differ slightly from the image’s intended color values.
 
 ![Application Screenshot](./resources/source/images/readme/ApplicationScreenshot.png)
 
 ## **Desktop Application Release Builds**
-Creating release builds for **Windows**, **Mac** and/or **Linux** is a 2-step process: code compilation, then application packaging, both of which are accomplished by running command-line NPM scripts that execute Gulp tasks.
+Creating release builds for **Windows**, **Mac** and/or **Linux** is a 2-step process: code compilation, then application packaging, both of which are accomplished by running command-line NPM scripts.
 
 #### **Compilation**
 
@@ -62,11 +62,7 @@ For more detailed information concerning code compilation please refer to [**Pro
 
 #### **Packaging**
 
-Application packaging can be executed for either all or individual deployment targets by entering one of the following CLI commands at the project **build folder** [*~/DataPixels/resources/build/* ]:
-
-```
-npm run package
-```
+Application packaging can be executed for individual platforms by entering one of the following CLI commands at the project **build folder** [*~/DataPixels/resources/build/* ]:
 
 ```
 npm run package-linux

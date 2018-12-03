@@ -1,10 +1,12 @@
 //Imports
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as C from "../support/constants.js";
+import * as C_IPC from "../../../build/js/support/constants.js";
 
 /**
  * @description The <strong>layout.js</strong> module contains properties and functions pertaining to orientation and resizing of the the Code Editor, Frame View and Drag Bar.
  * @requires constants
+ * @requires constantsIPC
  * @requires sharedStates
  * @module
  * 
@@ -46,7 +48,7 @@ function toggleLayout() {
     const dragBarHorizontal = C.CSSClass.DRAG_BAR_HORIZONTAL;
     const dragBarVertical = C.CSSClass.DRAG_BAR_VERTICAL;
 
-    const isHorizontal = (S.Orientation === C.Orientation.HORIZONTAL);
+    const isHorizontal = (S.Orientation === C_IPC.Orientation.HORIZONTAL);
 
     dragBar.classList.remove(dragBarHorizontal, dragBarVertical);
     content.style.flexDirection = (isHorizontal) ? C.CSS.COLUMN : C.CSS.ROW;
@@ -72,7 +74,7 @@ function validateLayout() {
     const frameView = C.HTMLElement.FRAME_VIEW;
     const minSize = C.Measurement.CONTENT_MIN_SIZE;
 
-    if (S.Orientation === C.Orientation.HORIZONTAL) {
+    if (S.Orientation === C_IPC.Orientation.HORIZONTAL) {
 
         if (S.CodeEditorSize.height < minSize || S.FrameViewSize.height < minSize) {
 
@@ -85,7 +87,7 @@ function validateLayout() {
         return;
     }
 
-    if (S.Orientation === C.Orientation.VERTICAL) {
+    if (S.Orientation === C_IPC.Orientation.VERTICAL) {
 
         if (S.CodeEditorSize.width < minSize || S.FrameViewSize.width < minSize) {
 
@@ -141,13 +143,13 @@ function adjustLayout(adjustmentTarget, adjustmentSize) {
     const codeEditor = C.HTMLElement.CODE_EDITOR;
     const frameView = C.HTMLElement.FRAME_VIEW;
 
-    if (S.Orientation === C.Orientation.HORIZONTAL) {
+    if (S.Orientation === C_IPC.Orientation.HORIZONTAL) {
 
         S.CodeEditorSize.height += (adjustmentTarget === codeEditor) ? adjustmentSize : -(adjustmentSize);
         S.FrameViewSize.height += (adjustmentTarget === frameView) ? adjustmentSize : -(adjustmentSize);
     }
 
-    if (S.Orientation === C.Orientation.VERTICAL) {
+    if (S.Orientation === C_IPC.Orientation.VERTICAL) {
 
         S.CodeEditorSize.width += (adjustmentTarget === codeEditor) ? adjustmentSize : -(adjustmentSize);
         S.FrameViewSize.width += (adjustmentTarget === frameView) ? adjustmentSize : -(adjustmentSize);
@@ -184,7 +186,7 @@ function updateContentDisplayType(CSSDisplayType) {
         frameView.style.height = `${S.FrameViewSize.height}${C.CSS.PX}`;
         frameView.style.pointerEvents = C.CSS.NONE;
 
-        if (S.Orientation === C.Orientation.VERTICAL) {
+        if (S.Orientation === C_IPC.Orientation.VERTICAL) {
 
             dragBar.style.width = `${M.DragBarSize.width}${C.CSS.PX}`;
             dragBar.style.height = `${M.DragBarSize.height}${C.CSS.PX}`;
@@ -211,14 +213,14 @@ function updateContentDisplayType(CSSDisplayType) {
         frameView.style.height = C.CSS.AUTO;
         frameView.style.pointerEvents = C.CSS.AUTO;
 
-        if (S.Orientation === C.Orientation.HORIZONTAL) {
+        if (S.Orientation === C_IPC.Orientation.HORIZONTAL) {
 
             const totalHeight = S.CodeEditorSize.height + S.FrameViewSize.height;
             
             codeEditorRatio = S.CodeEditorSize.height / totalHeight;
             frameViewRatio = S.FrameViewSize.height / totalHeight;
         }
-        else if (S.Orientation === C.Orientation.VERTICAL) {
+        else if (S.Orientation === C_IPC.Orientation.VERTICAL) {
 
             codeEditor.style.float = C.CSS.NONE;
 

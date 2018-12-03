@@ -2,13 +2,15 @@
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as App from "./app.js";
 import * as C from "../support/constants.js";
+import * as C_IPC from "../../../build/js/support/constants.js";
 import * as Content from "./content.js";
-import * as Main from "../main.js";
+import * as Index from "../index.js";
 
 /**
  * @description The <strong>controls.js</strong> module contains properties and functions pertaining to the initialization and control of UI elements.
  * @requires app
  * @requires constants
+ * @requires constantsIPC
  * @requires sharedStates
  * @module
  * 
@@ -55,7 +57,7 @@ function init() {
         
         C.HTMLElement.BUTTON_EXECUTE,
         C.ImageSource.RUN,
-        C.Label.CONTROLS_EXECUTE,
+        C_IPC.Label.MENU_ITEM_RUN,
         App.executeCode
     );
 
@@ -63,7 +65,7 @@ function init() {
         
         C.HTMLElement.BUTTON_SETTINGS,
         C.ImageSource.SETTINGS,
-        C.Label.CONTROLS_SETTINGS,
+        C_IPC.Label.MENU_ITEM_SETTINGS,
         App.displaySettingsDialog
     );
 
@@ -71,7 +73,7 @@ function init() {
         
         C.HTMLElement.BUTTON_LAYOUT_HORIZONTAL,
         C.ImageSource.DOCK,
-        C.Label.CONTROLS_LAYOUT_HORIZONTAL,
+        C_IPC.Label.MENU_ITEM_LAYOUT_HORIZONTAL,
         layoutButtonClickHandler
     );
 
@@ -79,7 +81,7 @@ function init() {
         
         C.HTMLElement.BUTTON_LAYOUT_VERTICAL,
         C.ImageSource.DOCK,
-        C.Label.CONTROLS_LAYOUT_VERTICAL,
+        C_IPC.Label.MENU_ITEM_LAYOUT_VERTICAL,
         layoutButtonClickHandler
     );
 
@@ -87,7 +89,7 @@ function init() {
 
         C.HTMLElement.BUTTON_RESET,
         C.ImageSource.RESET,
-        C.Label.CONTROLS_RESET,
+        C_IPC.Label.MENU_ITEM_RESET,
         Content.resetImageTransform
     );
 
@@ -95,7 +97,7 @@ function init() {
 
         C.HTMLElement.BUTTON_REFLECT_HORIZONTAL,
         C.ImageSource.REFLECT,
-        C.Label.CONTROLS_REFLECT_HORIZONTALLY,
+        C_IPC.Label.MENU_ITEM_REFLECT_HORIZONTALLY,
         reflectButtonClickHandler
     );
 
@@ -103,7 +105,7 @@ function init() {
 
         C.HTMLElement.BUTTON_REFLECT_VERTICAL,
         C.ImageSource.REFLECT,
-        C.Label.CONTROLS_REFLECT_VERTICALLY,
+        C_IPC.Label.MENU_ITEM_REFLECT_VERTICALLY,
         reflectButtonClickHandler
     );
 
@@ -113,7 +115,7 @@ function init() {
 
         C.HTMLElement.BUTTON_SCALE_UP,
         C.ImageSource.SCALE_UP,
-        C.Label.CONTROLS_SCALE_UP,
+        C_IPC.Label.MENU_ITEM_SCALE_UP,
         scaleButtonClickHandler,
         scaleEvents
     );
@@ -122,7 +124,7 @@ function init() {
 
         C.HTMLElement.BUTTON_SCALE_DOWN,
         C.ImageSource.SCALE_DOWN,
-        C.Label.CONTROLS_SCALE_DOWN,
+        C_IPC.Label.MENU_ITEM_SCALE_DOWN,
         scaleButtonClickHandler,
         scaleEvents
     );
@@ -187,7 +189,7 @@ function buildControlButton(button, src, title, clickHandler, events = [C.Event.
 function layoutButtonClickHandler(event) {
 
     const clickedVertical = (event.target === C.HTMLElement.BUTTON_LAYOUT_VERTICAL);
-    S.Orientation = (clickedVertical) ? C.Orientation.VERTICAL : C.Orientation.HORIZONTAL;
+    S.Orientation = (clickedVertical) ? C_IPC.Orientation.VERTICAL : C_IPC.Orientation.HORIZONTAL;
 
     App.toggleLayout();
 }
@@ -254,7 +256,7 @@ function updateExecuteButton() {
     executeButton.disabled = (textArea.value.trim() === "" || S.AutoExecute);
     executeButton.style.display = (S.AutoExecute) ? C.CSS.NONE : C.CSS.BLOCK;
 
-    Main.updateElectronRunMenuItem();
+    Index.updateElectronRunMenuItem();
 }
 
 /**
@@ -283,7 +285,7 @@ function updateTheme() {
  */
 function toggleLayout() {
 
-    const isVertical = (S.Orientation === C.Orientation.VERTICAL);
+    const isVertical = (S.Orientation === C_IPC.Orientation.VERTICAL);
 
     C.HTMLElement.BUTTON_LAYOUT_HORIZONTAL.disabled = (isVertical) ? false : true;
     C.HTMLElement.BUTTON_LAYOUT_VERTICAL.disabled   = (isVertical) ? true  : false;

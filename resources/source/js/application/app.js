@@ -1,24 +1,26 @@
 //Imports
 import { SharedStates as S } from "../support/sharedStates.js";
 import * as C from "../support/constants.js";
+import * as C_IPC from "../../../build/js/support/constants.js";
 import * as Content from "./content.js";
 import * as Controls from "./controls.js";
 import * as Examples from "../dataPixels/examples.js";
 import * as File from "./file.js";
 import * as Layout from "./layout.js";
-import * as Main from "../main.js";
+import * as Index from "../index.js";
 import * as Popups from "./popups.js";
 import DataPixelsCodeFactory from "../dataPixels/DataPixelsCodeFactory.js";
 
 /**
  * @description The <strong>app.js</strong> module contains properties and functions pertaining to the initialization and control of the application.
  * @requires constants
+ * @requires
  * @requires content
  * @requires controls
  * @requires examples
  * @requires file
  * @requires layout
- * @requires main
+ * @requires Index
  * @requires popups
  * @requires sharedStates
  * @module
@@ -87,12 +89,12 @@ function readStates() {
     S.AutoCode = DataPixelsCodeFactory.fromJSON(localStorage.getItem(C.Persistence.AUTO_CODE)) || null;
     S.AutoExecute = (localStorage.length) ? JSON.parse(localStorage.getItem(C.Persistence.AUTO_EXECUTE)) : false;
     S.Code = (localStorage.length) ? localStorage.getItem(C.Persistence.CODE) : Examples.basic;
-    S.CodeEditorFlexGrow = localStorage.getItem(C.Persistence.CODE_EDITOR_FLEX_GROW) || 0.65;
+    S.CodeEditorFlexGrow = localStorage.getItem(C.Persistence.CODE_EDITOR_FLEX_GROW) || C.Measurement.DEFAULT_CODE_EDITOR_PERCENT;
     S.Description = (localStorage.length) ? JSON.parse(localStorage.getItem(C.Persistence.DESCRIPTION)) : true;
-    S.FrameViewFlexGrow = localStorage.getItem(C.Persistence.FRAME_VIEW_FLEX_GROW) || 0.35;
+    S.FrameViewFlexGrow = localStorage.getItem(C.Persistence.FRAME_VIEW_FLEX_GROW) || C.Measurement.DEFAULT_FRAME_VIEW_PERCENT;
     S.CodeEditorMode = localStorage.getItem(C.Persistence.MODE) || C.Mode.MANUAL;
     S.Indentation = localStorage.getItem(C.Persistence.INDENTATION) || C.Indentation.INDENT_4;
-    S.Orientation = localStorage.getItem(C.Persistence.ORIENTATION) || C.Orientation.VERTICAL;
+    S.Orientation = localStorage.getItem(C.Persistence.ORIENTATION) || C_IPC.Orientation.VERTICAL;
     S.Theme = localStorage.getItem(C.Persistence.THEME) || C.Theme.DARK;
 
     window.addEventListener(C.Event.BEFORE_UNLOAD, writeStates);
@@ -195,7 +197,7 @@ function toggleLayout() {
     Controls.toggleLayout();
     Layout.toggleLayout();
 
-    Main.updateElectronOrientationMenuItems();
+    Index.updateElectronOrientationMenuItems();
 }
 
 /**
@@ -301,7 +303,7 @@ function setFrameViewHasImage(image = false) {
 
     S.FrameViewHasImage = image;
    
-    Main.updateElectronFrameViewMenuItems();
+    Index.updateElectronFrameViewMenuItems();
 }
 
 /**
@@ -336,7 +338,7 @@ function loadDataPixelsClassCode() {
     }
     else {
 
-        Main.exportClassFile(M.DataPixelsClassCode);
+        Index.exportClassFile(M.DataPixelsClassCode);
     }
 }
 
@@ -371,7 +373,7 @@ function XHRLoadHandler(event) {
     }
     else {
 
-        Main.exportClassFile(M.DataPixelsClassCode);
+        Index.exportClassFile(M.DataPixelsClassCode);
     }
 }
 

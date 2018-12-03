@@ -1,35 +1,38 @@
 {
-  "name": "data-pixels-playground",
-  "version": "1.0.0",
-  "description": "Create pixel art programmatically",
-  "author": "Geoffrey Mattie",
-  "license": "MIT",
-  "main": "main.js",
-  "scripts": {
-    "dev": "gulp --development",
-    "prod": "gulp --production",
-    "dev-prod": "gulp --development --production"
-  },
-  "devDependencies": {
-    "autoprefixer": "^6.7.7",
-    "babel-core": "^6.24.1",
-    "babel-loader": "^6.4.1",
-    "babel-preset-env": "^1.7.0",
-    "browser-sync": "^2.18.8",
-    "gulp": "^3.9.1",
-    "gulp-clean-css": "^3.0.4",
-    "gulp-htmlmin": "^3.0.0",
-    "gulp-postcss": "^6.4.0",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.0",
-    "gulp-util": "^3.0.8",
-    "uglify-js": "^2.8.26",
-    "uglifyjs-webpack-plugin": "^0.4.3",
-    "webpack": "^2.5.0",
-    "webpack-stream": "^3.2.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
+    "name": "data-pixels-playground",
+    "productName": "Data Pixels Playground",
+    "version": "1.1.0",
+    "description": "Create pixel art programmatically",
+    "author": "Geoffrey Mattie",
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {
+        "dev": "webpack --config ./config/webpack.config.js --mode development --watch",
+        "prod": "webpack --config ./config/webpack.config.js --mode production",
+        "dev-prod": "webpack --config ./config/webpack.config.js --mode production --watch"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.1.2",
+        "@babel/preset-env": "^7.1.0",
+        "babel-loader": "^8.0.4",
+        "browser-sync": "^2.26.0",
+        "browser-sync-webpack-plugin": "^2.2.2",
+        "css-loader": "^1.0.0",
+        "html-webpack-plugin": "^3.2.0",
+        "mini-css-extract-plugin": "^0.4.3",
+        "node-sass": "^4.9.3",
+        "optimize-css-assets-webpack-plugin": "^5.0.1",
+        "postcss-loader": "^3.0.0",
+        "postcss-preset-env": "^6.0.10",
+        "sass-loader": "^7.1.0",
+        "uglifyjs-webpack-plugin": "^2.0.1",
+        "webpack": "^4.20.2",
+        "webpack-cli": "^3.1.2"
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "maintained node versions",
+        "not dead"
+    ]
 }

@@ -2,21 +2,6 @@
 import * as C from "../support/constants.js";
 
 /**
- * String.prototype.padEnd is scheduled for:
- * Chromium 57, March 14, 2017
- * 
- * Currently, Electron 1.6.5 builds against Chromium 56
- *  
- */
-if (!String.prototype.padEnd) {
-
-    String.prototype.padEnd = function(length) {
-        
-        return this + (" ").repeat(Math.max(0, length - this.length));
-    };
-}
-
-/**
  * @description The <strong>DataPixelsCodeFactory</strong> class produces automatic and formated program code from an ImageData object to display in the Code Editor.
  * @requires constants
  * 
@@ -86,7 +71,7 @@ class DataPixelsCodeFactory {
         }
         else {
 
-            code = code.replace(/.?\:/g, "");
+            code = code.replace(/.?:/g, "");
         }
 
         if (align) {
