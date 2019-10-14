@@ -19,6 +19,6 @@
     },
     "dependencies": {
         "electron-window-state": "^5.0.3",
-        "esm": "^3.0.84"
+        "esm": "^3.1.0"
     }
 }
