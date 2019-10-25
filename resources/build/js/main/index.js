@@ -107,7 +107,7 @@ function createWindow() {
     });
     
     M.Window.once(C.Event.WINDOW_READY_TO_SHOW, () => M.Window.show());
-    M.Window.loadURL(path.join(__dirname, C.FileSource.HTML));
+    M.Window.loadFile(path.join(__dirname, C.FileSource.HTML));
     
     windowState.manage(M.Window);
 }
