@@ -13,12 +13,12 @@
         "package-windows": "gulp package-windows"
     },
     "devDependencies": {
-        "electron": "^3.0.10",
+        "electron": "^3.1.13",
         "electron-packager": "^12.2.0",
-        "gulp": "^4.0.0"
+        "gulp": "^4.0.2"
     },
     "dependencies": {
         "electron-window-state": "^5.0.3",
-        "esm": "^3.0.84"
+        "esm": "^3.2.25"
     }
 }
